@@ -1,7 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] !== 'contratante' && $_SESSION['user_type'] !== 'ambos')) {
-    header('Location: login.php');
+
+// CORREÇÃO: Convertemos o tipo de usuário para minúsculas antes de verificar
+$userType = isset($_SESSION['user_type']) ? strtolower($_SESSION['user_type']) : '';
+
+if (!isset($_SESSION['user_id']) || ($userType !== 'contratante' && $userType !== 'ambos')) {
+    // Redireciona se não for contratante ou se não estiver logado
+    header('Location: login.php?error=unauthorized');
     exit();
 }
 ?>

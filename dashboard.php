@@ -5,7 +5,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 $userName = $_SESSION['user_name'];
-$userType = $_SESSION['user_type'];
+// CORREÇÃO: Convertemos o tipo de usuário para minúsculas antes de verificar
+$userType = strtolower($_SESSION['user_type']); 
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -25,6 +26,7 @@ $userType = $_SESSION['user_type'];
         <main>
             <h2>Ações Rápidas</h2>
             
+            <?php // A verificação agora funciona corretamente ?>
             <?php if ($userType === 'contratante' || $userType === 'ambos'): ?>
                 <div class="profile-section">
                     <h3>Área do Contratante</h3>
