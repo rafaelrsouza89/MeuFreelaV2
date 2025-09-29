@@ -86,6 +86,7 @@ try {
                 </tbody>
             </table>
         <?php endif; ?>
-    </main>
+           </main>
+           <a href="dashboard.php" class="button button-secondary" style="margin-top: 1rem;">Voltar ao Painel</a>
 </body>
 </html>

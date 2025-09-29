@@ -1,13 +1,11 @@
-/* Configurações Gerais e Fundo Gradiente */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
     color: #333;
     margin: 0;
     padding: 2rem;
+    min-height: 100vh;
 }
-
-/* Container Principal (Painéis brancos) */
 .panel {
     width: 90%;
     max-width: 960px;
@@ -17,135 +15,24 @@ body {
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
-
-/* Navegação Principal (Primeiro Painel) */
-.main-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+h1, h2 { color: #4a148c; text-align: center; margin-bottom: 1.5rem; }
+form { display: flex; flex-direction: column; }
+label { margin-bottom: 5px; font-weight: bold; color: #555; }
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="number"], select, textarea {
+    padding: 12px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; font-size: 16px;
 }
-
-.main-nav .logo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #4a148c;
+.button, input[type="submit"] {
+    display: inline-block; background-color: #7b1fa2; color: white; padding: 12px 20px;
+    border: none; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold;
+    text-align: center; text-decoration: none; transition: background-color 0.3s; margin-top: 1rem;
 }
-
-.main-nav nav a {
-    color: #7b1fa2;
-    border: 2px solid #7b1fa2;
-    border-radius: 50px;
-    padding: 0.6rem 1.2rem;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 0.5rem;
-    transition: all 0.3s ease;
+.button:hover, input[type="submit"]:hover { background-color: #4a148c; }
+.button-secondary {
+    background-color: #f0f0f0; color: #555; border: 2px solid #ddd;
 }
-
-.main-nav nav a:hover {
-    background-color: #f3e5f5;
-}
-
-.main-nav nav a.active {
-    background-color: #7b1fa2;
-    color: white;
-}
-
-/* Seção "Como Funciona?" com 3 colunas */
-.how-it-works {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    text-align: center;
-    margin-top: 2rem;
-}
-
-.step h3 {
-    color: #4a148c;
-}
-
-h1, h2 {
-    color: #4a148c;
-    text-align: center;
-}
-
-/* Estilos de formulário */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="date"],
-input[type="number"],
-select,
-textarea {
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-
-input[type="submit"],
-.button {
-    display: inline-block;
-    background-color: #7b1fa2;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
-}
-
-input[type="submit"]:hover,
-.button:hover {
-    background-color: #4a148c;
-}
-
-/* Estilos para cards de vaga */
-.vaga-card {
-    border: 1px solid #e0e0e0;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 8px;
-    transition: box-shadow 0.3s ease;
-}
-.vaga-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.vaga-card h3 {
-    margin-top: 0;
-    color: #4a148c;
-}
-
-/* Perfil */
-.profile-section h3 {
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    color: #4a148c;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-    body { padding: 1rem; }
-    .how-it-works { grid-template-columns: 1fr; }
-    .main-nav { justify-content: center; }
-    .main-nav .logo { width: 100%; text-align: center; margin-bottom: 1rem; }
-}
+.button-secondary:hover { background-color: #e0e0e0; color: #333; }
+.profile-section h3 { border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #4a148c; }
+.vaga-card { border: 1px solid #e0e0e0; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+.vaga-card h3 { margin-top: 0; color: #4a148c; }
+a { color: #7b1fa2; text-decoration: none; }
+a:hover { text-decoration: underline; }
