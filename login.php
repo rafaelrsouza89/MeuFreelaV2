@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Entrar - MeuFreela</title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - MeuFreela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <header class="main-header">
-        <div class="container">
-            <a href="index.php" class="logo">MeuFreela</a>
-            <nav class="main-nav">
-                <a href="procurar_vagas.php">Vagas</a>
-                <a href="cadastro.php" class="button-primary">Cadastrar</a>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <div class="container">
-            <div class="job-listing-panel" style="max-width: 500px; margin: 2rem auto;">
-                <h1 style="text-align: center;">Acessar minha conta</h1>
-                <form action="processa_login.php" method="POST">
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" required>
-                    <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" required>
-                    <input type="submit" value="Entrar" style="border-radius: 5px; width: 100%;">
-                </form>
-                <p style="text-align: center; margin-top: 1rem;"><a href="recuperar_senha.php">Esqueceu sua senha?</a></p>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Acessar Conta</h3></div>
+                    <div class="card-body">
+                        <form action="processa_login.php" method="POST">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="email" name="email" type="email" placeholder="nome@exemplo.com" required />
+                                <label for="email">E-mail</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="senha" name="senha" type="password" placeholder="Senha" required />
+                                <label for="senha">Senha</label>
+                            </div>
+                            <div class="d-grid"><button class="btn btn-primary btn-lg" type="submit">Entrar</button></div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center py-3">
+                        <div class="small"><a href="cadastro.php">Não tem uma conta? Cadastre-se!</a></div>
+                        <div class="small"><a href="recuperar_senha.php">Esqueceu a senha?</a></div>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
