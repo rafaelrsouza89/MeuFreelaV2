@@ -6,7 +6,7 @@ $userName = $_SESSION['user_name'];
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Painel - MeuFreela</title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"><title>MeuFreela</title><link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header class="main-header">
@@ -20,7 +20,7 @@ $userName = $_SESSION['user_name'];
     <main>
         <div class="container">
             <div class="job-listing-panel">
-                <h1>Painel de Controle</h1>
+        
                 <h2>Olá, <?php echo htmlspecialchars($userName); ?>!</h2>
                 </div>
         </div>
