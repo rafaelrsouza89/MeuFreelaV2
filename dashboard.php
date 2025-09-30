@@ -2,7 +2,6 @@
 session_start();
 if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
 $userName = $_SESSION['user_name'];
-$userType = strtolower($_SESSION['user_type']); 
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -10,29 +9,21 @@ $userType = strtolower($_SESSION['user_type']);
     <meta charset="UTF-8"><title>Painel - MeuFreela</title><link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="panel">
-        <div style="text-align: right;"><a href="logout.php">Sair</a></div>
-        <h1>Bem-vindo, <?php echo htmlspecialchars($userName); ?>!</h1>
-        <main>
-            <h2>Ações Rápidas</h2>
-            <?php if ($userType === 'contratante' || $userType === 'ambos'): ?>
-                <div class="profile-section">
-                    <h3>Área do Contratante</h3>
-                    <a href="publicar_vaga.php" class="button">Publicar Nova Vaga</a>
-                    <a href="minhas_vagas.php" class="button">Gerenciar Minhas Vagas</a>
+    <header class="main-header">
+        <div class="container">
+            <a href="index.php" class="logo">MeuFreela</a>
+            <nav class="main-nav">
+                <a href="procurar_vagas.php">Vagas</a><a href="gerenciar_perfil.php">Meu Perfil</a><a href="logout.php">Sair</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div class="job-listing-panel">
+                <h1>Painel de Controle</h1>
+                <h2>Olá, <?php echo htmlspecialchars($userName); ?>!</h2>
                 </div>
-            <?php endif; ?>
-            <?php if ($userType === 'freelancer' || $userType === 'ambos'): ?>
-                 <div class="profile-section">
-                    <h3>Área do Freelancer</h3>
-                    <a href="procurar_vagas.php" class="button">Procurar Vagas</a>
-                </div>
-            <?php endif; ?>
-             <div class="profile-section">
-                <h3>Sua Conta</h3>
-                <a href="gerenciar_perfil.php" class="button">Gerenciar Meu Perfil</a>
-            </div>
-        </main>
-    </div>
+        </div>
+    </main>
 </body>
 </html>
