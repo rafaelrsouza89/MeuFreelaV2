@@ -1,10 +1,8 @@
 <?php
 session_start();
 require_once 'includes/db.php';
-
 $id_vaga = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id_vaga) { die("Vaga não encontrada."); }
-
 try {
     $sql = "SELECT v.*, u.nome AS nome_contratante FROM vaga AS v JOIN usuario AS u ON v.id_usuario = u.id WHERE v.id = :id_vaga";
     $stmt = $pdo->prepare($sql);
@@ -16,48 +14,55 @@ try {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Detalhes: <?php echo htmlspecialchars($vaga['titulo']); ?></title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes: <?php echo htmlspecialchars($vaga['titulo']); ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-    <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
-            <a href="index.php" class="logo">MeuFreela</a>
-            <nav class="main-nav">
-                <a href="procurar_vagas.php">Vagas</a>
+            <a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a>
+            <div class="d-flex">
+                <a class="nav-link me-3" href="procurar_vagas.php">Vagas</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="dashboard.php">Meu Painel</a><a href="logout.php">Sair</a>
+                    <a class="nav-link" href="dashboard.php">Meu Painel</a>
                 <?php else: ?>
-                    <a href="login.php">Entrar</a><a href="cadastro.php" class="button-primary">Cadastrar</a>
+                    <a class="btn btn-primary rounded-pill" href="login.php">Entrar</a>
                 <?php endif; ?>
-            </nav>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main>
-        <div class="container">
-            <div class="job-listing-panel">
-                <h1 style="text-align: left;"><?php echo htmlspecialchars($vaga['titulo']); ?></h1>
+    <main class="container py-5">
+        <div class="card">
+            <div class="card-header">
+                <h1><?php echo htmlspecialchars($vaga['titulo']); ?></h1>
+            </div>
+            <div class="card-body">
                 <p><strong>Contratante:</strong> <?php echo htmlspecialchars($vaga['nome_contratante']); ?></p>
                 <p><strong>Local:</strong> <?php echo htmlspecialchars($vaga['local']); ?></p>
                 <p><strong>Remuneração:</strong> <?php echo $vaga['tipo_vaga'] === 'voluntario' ? 'Trabalho Voluntário' : 'R$ ' . number_format($vaga['remuneracao'], 2, ',', '.'); ?></p>
-                <hr style="margin: 2rem 0;">
-                <h3>Descrição da Vaga</h3>
-                <p><?php echo nl2br(htmlspecialchars($vaga['descricao'])); ?></p>
-                
+                <hr>
+                <h5 class="card-title">Descrição da Vaga</h5>
+                <p class="card-text"><?php echo nl2br(htmlspecialchars($vaga['descricao'])); ?></p>
+
                 <?php if (isset($_SESSION['user_id']) && (strtolower($_SESSION['user_type']) === 'freelancer' || strtolower($_SESSION['user_type']) === 'ambos')): ?>
-                    <form action="processa_candidatura.php" method="POST" style="margin-top: 2rem;">
+                    <form action="processa_candidatura.php" method="POST" class="mt-4">
                         <input type="hidden" name="vaga_id" value="<?php echo $vaga['id']; ?>">
-                        <input type="submit" value="Candidatar-se a esta Vaga" style="border-radius: 5px;">
+                        <button type="submit" class="btn btn-success btn-lg">Candidatar-se a esta Vaga</button>
                     </form>
                 <?php elseif (!isset($_SESSION['user_id'])): ?>
-                    <p style="text-align: center; font-weight: bold; margin-top: 2rem;">
+                    <div class="alert alert-warning mt-4" role="alert">
                         <a href="login.php">Faça login como freelancer</a> para se candidatar.
-                    </p>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
     </main>
 
+    <footer class="bg-light text-center py-3 mt-auto">
+        <div class="container"><p class="mb-0">MeuFreela &copy; 2025</p></div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
