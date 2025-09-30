@@ -13,20 +13,31 @@ try {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Minhas Vagas - MeuFreela</title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Vagas - MeuFreela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="main-header"><div class="container"><a href="index.php" class="logo">MeuFreela</a><nav class="main-nav"><a href="dashboard.php">Meu Painel</a><a href="logout.php">Sair</a></nav></div></header>
-    <main><div class="container"><div class="job-listing-panel">
-        <h1 style="text-align: left;">Minhas Vagas Publicadas</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container"><a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a><div class="d-flex"><a class="nav-link" href="dashboard.php">Meu Painel</a></div></div>
+    </nav>
+    <main class="container py-5">
+        <h1 class="mb-4">Minhas Vagas Publicadas</h1>
         <?php if (!empty($vagas)): foreach ($vagas as $vaga): ?>
-            <div class="job-card">
-                <div><h3><?php echo htmlspecialchars($vaga['titulo']); ?></h3><p><?php echo $vaga['total_candidaturas']; ?> candidatura(s)</p></div>
-                <div><a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="button-primary" style="text-decoration: none;">Ver Candidatos</a></div>
+            <div class="card mb-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title"><?php echo htmlspecialchars($vaga['titulo']); ?></h5>
+                        <p class="card-text"><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?> candidatura(s)</span></p>
+                    </div>
+                    <a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-primary">Ver Candidatos</a>
+                </div>
             </div>
         <?php endforeach; else: ?>
-            <p>Você ainda não publicou nenhuma vaga.</p>
+            <div class="alert alert-info">Você ainda não publicou nenhuma vaga.</div>
         <?php endif; ?>
-    </div></div></main>
+    </main>
+    <footer class="bg-light text-center py-3 mt-auto"><div class="container"><p class="mb-0">MeuFreela &copy; 2025</p></div></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
