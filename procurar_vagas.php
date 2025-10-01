@@ -5,7 +5,7 @@ require_once 'includes/db.php';
 // Captura os valores dos filtros da URL (se existirem)
 $search_term = isset($_GET['q']) ? trim($_GET['q']) : '';
 $filter_tipo = isset($_GET['tipo']) ? $_GET['tipo'] : '';
-$filter_categoria = isset($_GET['categoria']) ? $_GET['categoria'] : '';
+
 
 try {
     // A base da query é a mesma
@@ -21,10 +21,7 @@ try {
         $sql .= " AND v.tipo_vaga = :tipo";
         $params[':tipo'] = $filter_tipo;
     }
-    if (!empty($filter_categoria)) {
-        $sql .= " AND v.categoria = :categoria";
-        $params[':categoria'] = $filter_categoria;
-    }
+    
 
     $sql .= " ORDER BY v.data_publicacao DESC";
     $stmt = $pdo->prepare($sql);
@@ -54,13 +51,7 @@ try {
                                 <option value="voluntario" <?php if($filter_tipo == 'voluntario') echo 'selected'; ?>>Voluntário</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                             <select name="categoria" class="form-select">
-                                <option value="">Categoria (Todas)</option>
-                                <option value="Musicos" <?php if($filter_categoria == 'Musicos') echo 'selected'; ?>>Músicos</option>
-                                <option value="Cozinheiros" <?php if($filter_categoria == 'Cozinheiros') echo 'selected'; ?>>Cozinheiros</option>
-                                </select>
-                        </div>
+                        
                         <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Filtrar</button></div>
                     </div>
                 </div>
