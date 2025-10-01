@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $dbname = 'meufreela_db';
-$username = 'root';
-$password = '';
+$username = 'root'; // Usuário padrão do XAMPP
+$password = ''; // Senha padrão do XAMPP
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
