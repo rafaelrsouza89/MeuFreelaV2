@@ -16,28 +16,61 @@ try {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Vagas - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { background-color: #fff; height: 100vh; padding-top: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar .nav-link { color: #555; font-weight: 500; }
+        .sidebar .nav-link.active { color: #0d6efd; background-color: #e9f5ff; border-right: 3px solid #0d6efd; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <div class="container"><a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a><div class="d-flex"><a class="nav-link" href="dashboard.php">Meu Painel</a></div></div>
-    </nav>
-    <main class="container py-5">
-        <h1 class="mb-4">Minhas Vagas Publicadas</h1>
-        <?php if (!empty($vagas)): foreach ($vagas as $vaga): ?>
-            <div class="card mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="card-title"><?php echo htmlspecialchars($vaga['titulo']); ?></h5>
-                        <p class="card-text"><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?> candidatura(s)</span></p>
-                    </div>
-                    <a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-primary">Ver Candidatos</a>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky">
+                    <h4 class="px-3">MeuFreela</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" href="dashboard.php">Meu Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="minhas_vagas.php">Minhas Vagas</a></li>
+                    </ul>
                 </div>
-            </div>
-        <?php endforeach; else: ?>
-            <div class="alert alert-info">Você ainda não publicou nenhuma vaga.</div>
-        <?php endif; ?>
-    </main>
-    <footer class="bg-light text-center py-3 mt-auto"><div class="container"><p class="mb-0">MeuFreela &copy; 2025</p></div></footer>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Minhas Vagas Publicadas</h1>
+                    <a href="publicar_vaga.php" class="btn btn-primary">Publicar Nova Vaga</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <?php if (!empty($vagas)): ?>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Título da Vaga</th>
+                                        <th>Candidaturas</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($vagas as $vaga): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($vaga['titulo']); ?></td>
+                                        <td><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?></span></td>
+                                        <td><a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-outline-primary">Ver Candidatos</a></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p class="text-center">Você ainda não publicou nenhuma vaga.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

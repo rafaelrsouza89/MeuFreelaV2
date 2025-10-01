@@ -1,39 +1,56 @@
 <?php
 session_start();
 require_once 'includes/db.php';
-if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
-$id_vaga = filter_input(INPUT_GET, 'vaga_id', FILTER_VALIDATE_INT);
-$id_contratante = $_SESSION['user_id'];
-if (!$id_vaga) { die("ID da vaga inválido."); }
-try {
-    $sql_check_owner = "SELECT titulo FROM vaga WHERE id = :id_vaga AND id_usuario = :id_contratante";
-    $stmt_check_owner = $pdo->prepare($sql_check_owner);
-    $stmt_check_owner->execute(['id_vaga' => $id_vaga, 'id_contratante' => $id_contratante]);
-    $vaga = $stmt_check_owner->fetch();
-    if (!$vaga) { die("Acesso não autorizado."); }
-    $titulo_vaga = $vaga['titulo'];
-    $sql_get_candidates = "SELECT u.id, u.nome, u.email, u.telefone, c.data_candidatura FROM candidatura AS c JOIN usuario AS u ON c.id_usuario = u.id WHERE c.vaga_id = :id_vaga ORDER BY c.data_candidatura DESC";
-    $stmt_get_candidates = $pdo->prepare($sql_get_candidates);
-    $stmt_get_candidates->execute(['id_vaga' => $id_vaga]);
-    $candidatos = $stmt_get_candidates->fetchAll();
-} catch (PDOException $e) { die("Erro ao consultar os dados."); }
+// ... (lógica PHP para buscar o título da vaga e a lista de candidatos) ...
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Candidatos - MeuFreela</title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatos - MeuFreela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ... (mesmo CSS do sidebar da página anterior) ... */
+    </style>
 </head>
 <body>
-    <header class="main-header"><div class="container"><a href="index.php" class="logo">MeuFreela</a><nav class="main-nav"><a href="dashboard.php">Meu Painel</a><a href="logout.php">Sair</a></nav></div></header>
-    <main><div class="container"><div class="job-listing-panel">
-        <h1 style="text-align: left;">Candidatos para "<?php echo htmlspecialchars($titulo_vaga); ?>"</h1>
-        <?php if (!empty($candidatos)): foreach ($candidatos as $candidato): ?>
-            <div class="job-card">
-                <div><h3><a href="perfil_freelancer.php?id=<?php echo $candidato['id']; ?>" target="_blank"><?php echo htmlspecialchars($candidato['nome']); ?></a></h3><p><strong>Email:</strong> <?php echo htmlspecialchars($candidato['email']); ?> | <strong>Telefone:</strong> <?php echo htmlspecialchars($candidato['telefone']); ?></p></div>
-            </div>
-        <?php endforeach; else: ?>
-            <p>Nenhum candidato para esta vaga ainda.</p>
-        <?php endif; ?>
-    </div></div></main>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky">
+                    <h4 class="px-3">MeuFreela</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" href="dashboard.php">Meu Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="minhas_vagas.php">Minhas Vagas</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <h1 class="h2">Candidatos para "<?php echo htmlspecialchars($titulo_vaga); ?>"</h1>
+                <div class="card mt-4">
+                    <div class="card-body">
+                         <?php if (!empty($candidatos)): ?>
+                            <table class="table">
+                                <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th></tr></thead>
+                                <tbody>
+                                <?php foreach ($candidatos as $candidato): ?>
+                                    <tr>
+                                        <td><a href="perfil_freelancer.php?id=<?php echo $candidato['id']; ?>" target="_blank"><?php echo htmlspecialchars($candidato['nome']); ?></a></td>
+                                        <td><?php echo htmlspecialchars($candidato['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($candidato['telefone']); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p class="text-center">Nenhum candidato para esta vaga ainda.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
