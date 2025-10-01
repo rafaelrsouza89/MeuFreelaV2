@@ -1,35 +1,9 @@
-<?php
-session_start();
-require_once 'includes/db.php';
-
-$vagas_recentes = [];
-try {
-    // Query para buscar as 4 vagas mais recentes e ativas
-    $sql = "SELECT 
-                v.id, 
-                v.titulo, 
-                v.local, 
-                u.nome AS nome_contratante
-            FROM vaga AS v
-            JOIN usuario AS u ON v.id_usuario = u.id
-            WHERE v.data_limite >= CURDATE()
-            ORDER BY v.data_publicacao DESC
-            LIMIT 4";
-
-    $stmt = $pdo->query($sql);
-    $vagas_recentes = $stmt->fetchAll();
-
-} catch (PDOException $e) {
-    // Em caso de erro, a página continua funcionando, mas sem as vagas
-    // error_log($e->getMessage());
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeuFreela - Encontre Vagas na sua Região</title>
+    <title>MeuFreela - Conectando Talentos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -38,8 +12,8 @@ try {
         <div class="container">
             <a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a>
             <div class="d-flex">
-                <a class="nav-link me-3" href="procurar_vagas.php">Vagas</a>
-                <a class="nav-link me-3" href="login.php">Entrar</a>
+                <a class="btn btn-primary rounded-pill" href="procurar_vagas.php">Vagas</a>
+                <a class="btn btn-primary rounded-pill" href="login.php">Entrar</a>
                 <a class="btn btn-primary rounded-pill" href="cadastro.php">Cadastrar</a>
             </div>
         </div>
@@ -60,32 +34,21 @@ try {
 
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-4">Vagas Recentes</h2>
-
-            <?php if (!empty($vagas_recentes)): ?>
-                <div class="row">
-                    <?php foreach ($vagas_recentes as $vaga): ?>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title text-primary"><?php echo htmlspecialchars($vaga['titulo']); ?></h5>
-                                    <p class="card-text mb-1"><strong>Contratante:</strong> <?php echo htmlspecialchars($vaga['nome_contratante']); ?></p>
-                                    <p class="card-text text-muted"><strong>Local:</strong> <?php echo htmlspecialchars($vaga['local']); ?></p>
-                                    <a href="detalhes_vaga.php?id=<?php echo $vaga['id']; ?>" class="btn btn-primary mt-auto">Ver Detalhes</a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+            <h2 class="text-center mb-4">Como Funciona?</h2>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h3>1. Cadastre-se</h3>
+                    <p>Crie sua conta como freelancer ou contratante de forma rápida e fácil.</p>
                 </div>
-                <div class="text-center mt-4">
-                    <a href="procurar_vagas.php" class="btn btn-outline-primary">Ver Todas as Vagas</a>
+                <div class="col-md-4">
+                    <h3>2. Explore Vagas</h3>
+                    <p>Navegue e encontre as oportunidades que mais combinam com seu perfil.</p>
                 </div>
-            <?php else: ?>
-                <div class="alert alert-info" role="alert">
-                    Nenhuma vaga recente encontrada. Volte em breve!
+                <div class="col-md-4">
+                    <h3>3. Candidate-se</h3>
+                    <p>Envie sua candidatura para as vagas de interesse com apenas um clique.</p>
                 </div>
-            <?php endif; ?>
-
+            </div>
         </div>
     </section>
 

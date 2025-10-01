@@ -26,8 +26,7 @@ $userType = strtolower($_SESSION['user_type']);
     <main class="container py-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">Painel de Controle</h1>
-                <h2 class="card-subtitle mb-4 text-muted">Olá, <?php echo htmlspecialchars($userName); ?>!</h2>
+             <h2 class="card-subtitle mb-4 text-muted">Olá, <?php echo htmlspecialchars($userName); ?>!</h2>
 
                 <?php if ($userType === 'contratante' || $userType === 'ambos'): ?>
                     <div class="mb-4">

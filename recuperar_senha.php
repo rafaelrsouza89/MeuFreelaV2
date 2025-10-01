@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>Recuperar Senha - MeuFreela</title><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - MeuFreela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <header class="main-header"><div class="container"><a href="index.php" class="logo">MeuFreela</a><nav class="main-nav"><a href="login.php">Entrar</a></nav></div></header>
-    <main><div class="container"><div class="job-listing-panel" style="max-width: 500px; margin: 2rem auto;">
-        <h1 style="text-align: center;">Recuperar Senha</h1>
-        <form action="processa_recuperacao.php" method="POST">
-            <label for="email">Seu E-mail:</label><input type="email" id="email" name="email" required>
-            <input type="submit" value="Enviar Link de Recuperação" style="border-radius: 5px; width: 100%;">
-        </form>
-    </div></div></main>
+<body class="bg-light">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Recuperar Senha</h3></div>
+                    <div class="card-body">
+                        <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+                            <div class="alert alert-success" role="alert">
+                                Se o e-mail existir em nosso sistema, um link de recuperação foi enviado.
+                            </div>
+                        <?php endif; ?>
+                        <p class="text-muted text-center small mb-4">Insira seu e-mail e enviaremos um link para você redefinir sua senha.</p>
+                        <form action="processa_recuperacao.php" method="POST">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="email" name="email" type="email" placeholder="nome@exemplo.com" required />
+                                <label for="email">E-mail</label>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button class="btn btn-primary btn-lg" type="submit">Enviar Link</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center py-3">
+                        <div class="small"><a href="login.php">Lembrou a senha? Voltar para o login</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
