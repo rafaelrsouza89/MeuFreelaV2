@@ -6,20 +6,19 @@ if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
 $id_usuario = $_SESSION['user_id'];
 $message = '';
 
-// Processar o formulário se for enviado (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Coleta de todos os campos do formulário
-    $nome = trim($_POST['nome']);
-    $data_nascimento = !empty($_POST['data_nascimento']) ? trim($_POST['data_nascimento']) : null;
-    $cpf = trim($_POST['cpf']);
-    $telefone = trim($_POST['telefone']);
-    $linkedin = trim($_POST['linkedin']);
-    $cep = trim($_POST['cep']);
-    $estado = trim($_POST['estado']);
-    $cidade = trim($_POST['cidade']);
-    $bairro = trim($_POST['bairro']);
-    $logradouro = trim($_POST['logradouro']);
-    $numero = trim($_POST['numero']);
+    // CORREÇÃO: Adicionada verificação 'isset()' em todos os campos para evitar avisos.
+    $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
+    $data_nascimento = isset($_POST['data_nascimento']) && !empty($_POST['data_nascimento']) ? trim($_POST['data_nascimento']) : null;
+    $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : null;
+    $telefone = isset($_POST['telefone']) ? trim($_POST['telefone']) : null;
+    $linkedin = isset($_POST['linkedin']) ? trim($_POST['linkedin']) : null;
+    $cep = isset($_POST['cep']) ? trim($_POST['cep']) : null;
+    $estado = isset($_POST['estado']) ? trim($_POST['estado']) : null;
+    $cidade = isset($_POST['cidade']) ? trim($_POST['cidade']) : null;
+    $bairro = isset($_POST['bairro']) ? trim($_POST['bairro']) : null;
+    $logradouro = isset($_POST['logradouro']) ? trim($_POST['logradouro']) : null;
+    $numero = isset($_POST['numero']) ? trim($_POST['numero']) : null;
 
     try {
         $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero WHERE id = :id_usuario";
@@ -32,11 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_name'] = $nome;
         $message = '<div class="alert alert-success">Perfil atualizado com sucesso!</div>';
     } catch (PDOException $e) {
-        $message = '<div class="alert alert-danger">Erro ao atualizar o perfil: ' . $e->getMessage() . '</div>';
+        $message = '<div class="alert alert-danger">Erro ao atualizar o perfil.</div>';
     }
 }
 
-// Buscar os dados atuais do usuário para exibir no formulário
 try {
     $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
     $stmt_select = $pdo->prepare($sql_select);
@@ -55,6 +53,8 @@ try {
         .sidebar { background-color: #fff; height: 100vh; padding-top: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
         .sidebar .nav-link { color: #555; font-weight: 500; }
         .sidebar .nav-link.active { color: #0d6efd; background-color: #e9f5ff; border-right: 3px solid #0d6efd; }
+        .info-display p { margin-bottom: 0.75rem; }
+        .info-display strong { min-width: 160px; display: inline-block; color: #6c757d; }
     </style>
 </head>
 <body>
@@ -66,59 +66,51 @@ try {
                     <ul class="nav flex-column">
                         <li class="nav-item"><a class="nav-link active" href="dashboard.php">Meu Perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="minhas_vagas.php">Minhas Vagas</a></li>
-                        </ul>
+                    </ul>
                 </div>
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Meu Perfil</h1>
+                    <button id="editButton" class="btn btn-outline-primary">Editar Perfil</button>
                 </div>
 
                 <?php if (!empty($message)) { echo $message; } ?>
 
-                <form class="card" method="POST" action="dashboard.php" enctype="multipart/form-data">
+                <div id="infoDisplay" class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h5>Dados Pessoais</h5>
-                                <div class="row">
-                                    <div class="col-md-12 mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" name="nome" value="<?php echo htmlspecialchars($usuario['nome'] ?? ''); ?>"></div>
-                                    <div class="col-md-6 mb-3"><label class="form-label">Data de Nascimento *</label><input type="date" class="form-control" name="data_nascimento" value="<?php echo htmlspecialchars($usuario['data_nascimento'] ?? ''); ?>"></div>
-                                    <div class="col-md-6 mb-3"><label class="form-label">CPF *</label><input type="text" class="form-control" name="cpf" value="<?php echo htmlspecialchars($usuario['cpf'] ?? ''); ?>"></div>
-                                </div>
-                                <hr>
-                                <h5>Informações de Contato</h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3"><label class="form-label">E-mail *</label><input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($usuario['email'] ?? ''); ?>" disabled></div>
-                                    <div class="col-md-6 mb-3"><label class="form-label">Telefone Celular *</label><input type="text" class="form-control" name="telefone" value="<?php echo htmlspecialchars($usuario['telefone'] ?? ''); ?>"></div>
-                                    <div class="col-md-12 mb-3"><label class="form-label">LinkedIn</label><input type="text" class="form-control" name="linkedin" value="<?php echo htmlspecialchars($usuario['linkedin'] ?? ''); ?>"></div>
-                                </div>
-                                <hr>
-                                <h5>Endereço</h5>
-                                <div class="row">
-                                    <div class="col-md-4 mb-3"><label class="form-label">CEP *</label><input type="text" class="form-control" name="cep" value="<?php echo htmlspecialchars($usuario['cep'] ?? ''); ?>"></div>
-                                    <div class="col-md-4 mb-3"><label class="form-label">Estado *</label><input type="text" class="form-control" name="estado" value="<?php echo htmlspecialchars($usuario['estado'] ?? ''); ?>"></div>
-                                    <div class="col-md-4 mb-3"><label class="form-label">Cidade *</label><input type="text" class="form-control" name="cidade" value="<?php echo htmlspecialchars($usuario['cidade'] ?? ''); ?>"></div>
-                                    <div class="col-md-6 mb-3"><label class="form-label">Bairro *</label><input type="text" class="form-control" name="bairro" value="<?php echo htmlspecialchars($usuario['bairro'] ?? ''); ?>"></div>
-                                    <div class="col-md-6 mb-3"><label class="form-label">Logradouro *</label><input type="text" class="form-control" name="logradouro" value="<?php echo htmlspecialchars($usuario['logradouro'] ?? ''); ?>"></div>
-                                    <div class="col-md-4 mb-3"><label class="form-label">Número</label><input type="text" class="form-control" name="numero" value="<?php echo htmlspecialchars($usuario['numero'] ?? ''); ?>"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center">
+                         <div class="row">
+                            <div class="col-md-3 text-center">
                                 <img src="https://via.placeholder.com/150" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                                <input type="file" class="form-control" name="foto">
+                            </div>
+                            <div class="col-md-9">
+                                <h5>Dados Pessoais</h5>
+                                <div class="info-display">
+                                    <p><strong>Nome Completo:</strong> <?php echo htmlspecialchars($usuario['nome'] ?? 'Não informado'); ?></p>
+                                    <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars($usuario['data_nascimento'] ?? 'Não informado'); ?></p>
+                                    <p><strong>CPF:</strong> <?php echo htmlspecialchars($usuario['cpf'] ?? 'Não informado'); ?></p>
+                                </div><hr>
+                                <h5>Informações de Contato</h5>
+                                <div class="info-display">
+                                    <p><strong>E-mail:</strong> <?php echo htmlspecialchars($usuario['email'] ?? 'Não informado'); ?></p>
+                                    <p><strong>Telefone:</strong> <?php echo htmlspecialchars($usuario['telefone'] ?? 'Não informado'); ?></p>
+                                    <p><strong>LinkedIn:</strong> <?php echo htmlspecialchars($usuario['linkedin'] ?? 'Não informado'); ?></p>
+                                </div><hr>
+                                <h5>Endereço</h5>
+                                <div class="info-display">
+                                    <p><strong>Logradouro:</strong> <?php echo htmlspecialchars($usuario['logradouro'] ?? 'Não informado'); ?>, <?php echo htmlspecialchars($usuario['numero'] ?? 's/n'); ?></p>
+                                    <p><strong>Bairro:</strong> <?php echo htmlspecialchars($usuario['bairro'] ?? 'Não informado'); ?></p>
+                                    <p><strong>Cidade/Estado:</strong> <?php echo htmlspecialchars($usuario['cidade'] ?? 'Não informado'); ?>/<?php echo htmlspecialchars($usuario['estado'] ?? 'SC'); ?></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-end">
-                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    </div>
-                </form>
+                </div>
 
-            </main>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                <form id="editForm" class="card d-none" method="POST" action="dashboard.php">
+                    <div class="card-body">
+                        <h5 class="card-title">Editando Perfil</h5>
+                        <div class="row">
+                           <div class="col-md-12 mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" name="nome" value="<?php echo htmlspecialchars($usuario['nome'] ?? ''); ?>"></div>
+                            <div class="col-md-6 mb-3"><label class="
