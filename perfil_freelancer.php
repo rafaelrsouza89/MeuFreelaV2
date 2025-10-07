@@ -80,4 +80,7 @@ try {
         <a href="javascript:history.back()">Voltar</a>
     </div>
 </body>
+<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
+    &larr; Voltar
+</a>
 </html>

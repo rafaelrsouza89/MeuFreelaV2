@@ -110,4 +110,7 @@ try {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
+    &larr; Voltar
+</a>
 </html>
