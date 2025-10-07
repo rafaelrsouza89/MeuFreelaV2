@@ -77,3 +77,10 @@ try {
     &larr; Voltar
 </a>
 </html>
+<?php
+$stmt = $pdo->prepare("SELECT c.*, u.nome FROM candidatura c JOIN usuario u ON c.id_usuario = u.id WHERE c.id_vaga = ?");
+$stmt->execute([$vaga['id']]);
+while ($cand = $stmt->fetch()) {
+    echo "<li>{$cand['nome']} - {$cand['status']}</li>";
+}
+?>

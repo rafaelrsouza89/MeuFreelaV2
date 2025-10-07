@@ -1,6 +1,10 @@
 <?php
 session_start();
-// ... (lógica de verificação de acesso) ...
+
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['tipo_usuario'], ['contratante', 'ambos'])) {
+    header('Location: login.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

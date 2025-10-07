@@ -21,10 +21,13 @@
                             <div class="form-floating mb-3"><input class="form-control" id="email" name="email" type="email" placeholder="nome@exemplo.com" required /><label for="email">E-mail</label></div>
                             <div class="form-floating mb-3"><input class="form-control" id="senha" name="senha" type="password" placeholder="Senha" required /><label for="senha">Senha</label></div>
                             <div class="form-floating mb-3"><input class="form-control" id="telefone" name="telefone" type="text" placeholder="Telefone" required /><label for="telefone">Telefone</label></div>
-                            <div class="form-floating mb-3">
+                            <div class="mb-3">
+                                <label for="tipo_usuario" class="form-label">Tipo de Usuário</label>
                                 <select class="form-select" id="tipo_usuario" name="tipo_usuario" required>
-                                    <option value="" selected disabled>Selecione um perfil...</option><option value="freelancer">Freelancer</option><option value="contratante">Contratante</option><option value="ambos">Ambos</option>
-                                </select><label for="tipo_usuario">Eu sou</label>
+                                    <option value="freelance">Freelancer</option>
+                                    <option value="contratante">Contratante</option>
+                                    <option value="ambos">Ambos</option>
+                                </select>
                             </div>
                             <div class="mt-4 mb-0"><div class="d-grid"><button class="btn btn-primary btn-lg" type="submit">Criar Conta</button></div></div>
                         </form>

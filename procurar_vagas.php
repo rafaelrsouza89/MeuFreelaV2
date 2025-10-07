@@ -81,3 +81,10 @@ try {
     &larr; Voltar
 </a>
 </html>
+
+<?php if ($_SESSION['tipo_usuario'] === 'freelance' || $_SESSION['tipo_usuario'] === 'ambos'): ?>
+    <form action="candidatar_vaga.php" method="POST">
+        <input type="hidden" name="id_vaga" value="<?= $vaga['id'] ?>">
+        <button type="submit" class="btn btn-primary">Candidatar-se</button>
+    </form>
+<?php endif; ?>

@@ -6,8 +6,16 @@ if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
 $id_usuario = $_SESSION['user_id'];
 $message = '';
 
+// 1. BUSQUE O USUÁRIO PRIMEIRO
+try {
+    $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
+    $stmt_select = $pdo->prepare($sql_select);
+    $stmt_select->execute(['id_usuario' => $id_usuario]);
+    $usuario = $stmt_select->fetch();
+} catch (PDOException $e) { die("Erro ao carregar dados do perfil."); }
+
+// 2. DEPOIS PROCESSE O POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CORREÇÃO: Adicionada verificação 'isset()' em todos os campos para evitar avisos.
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
     $data_nascimento = isset($_POST['data_nascimento']) && !empty($_POST['data_nascimento']) ? trim($_POST['data_nascimento']) : null;
     $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : null;
@@ -20,27 +28,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logradouro = isset($_POST['logradouro']) ? trim($_POST['logradouro']) : null;
     $numero = isset($_POST['numero']) ? trim($_POST['numero']) : null;
 
+    // NOVO: Processamento do upload da foto
+    $foto_perfil = $usuario['foto_perfil']; // valor atual do banco
+    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
+        $nome_arquivo = 'foto_' . $id_usuario . '_' . time() . '.' . $ext;
+        $caminho_destino = 'uploads/' . $nome_arquivo;
+
+        // Cria a pasta uploads se não existir
+        if (!is_dir('uploads')) {
+            mkdir('uploads', 0777, true);
+        }
+
+        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_destino)) {
+            $foto_perfil = $caminho_destino;
+        }
+    }
+
     try {
-        $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero WHERE id = :id_usuario";
+        $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero, foto_perfil = :foto_perfil WHERE id = :id_usuario";
         $stmt_update = $pdo->prepare($sql_update);
         $stmt_update->execute([
             'nome' => $nome, 'data_nascimento' => $data_nascimento, 'cpf' => $cpf, 'telefone' => $telefone, 'linkedin' => $linkedin,
             'cep' => $cep, 'estado' => $estado, 'cidade' => $cidade, 'bairro' => $bairro, 'logradouro' => $logradouro, 'numero' => $numero,
+            'foto_perfil' => $foto_perfil,
             'id_usuario' => $id_usuario
         ]);
         $_SESSION['user_name'] = $nome;
         $message = '<div class="alert alert-success">Perfil atualizado com sucesso!</div>';
+
+        // Atualize $usuario para refletir as alterações imediatamente
+        $usuario['foto_perfil'] = $foto_perfil;
+        $usuario['nome'] = $nome;
+        $usuario['data_nascimento'] = $data_nascimento;
+        $usuario['cpf'] = $cpf;
+        $usuario['telefone'] = $telefone;
+        $usuario['linkedin'] = $linkedin;
+        $usuario['cep'] = $cep;
+        $usuario['estado'] = $estado;
+        $usuario['cidade'] = $cidade;
+        $usuario['bairro'] = $bairro;
+        $usuario['logradouro'] = $logradouro;
+        $usuario['numero'] = $numero;
+
     } catch (PDOException $e) {
         $message = '<div class="alert alert-danger">Erro ao atualizar o perfil.</div>';
     }
 }
 
-try {
-    $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
-    $stmt_select = $pdo->prepare($sql_select);
-    $stmt_select->execute(['id_usuario' => $id_usuario]);
-    $usuario = $stmt_select->fetch();
-} catch (PDOException $e) { die("Erro ao carregar dados do perfil."); }
+// Adicione este trecho após buscar o usuário do banco:
+$mostrarBotaoProcurarVagas = false;
+if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['freelance', 'ambos'])) {
+    $mostrarBotaoProcurarVagas = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -73,7 +113,12 @@ try {
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Meu Perfil</h1>
-                    <button id="editButton" class="btn btn-outline-primary">Editar Perfil</button>
+                    <div>
+                        <button id="editButton" class="btn btn-outline-primary">Editar Perfil</button>
+                        <?php if ($mostrarBotaoProcurarVagas): ?>
+                            <a href="procurar_vagas.php" class="btn btn-success ms-2">Procurar Vagas</a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <?php if (!empty($message)) { echo $message; } ?>
