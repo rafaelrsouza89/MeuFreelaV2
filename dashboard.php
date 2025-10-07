@@ -82,7 +82,7 @@ try {
                     <div class="card-body">
                          <div class="row">
                             <div class="col-md-3 text-center">
-                                <img src="https://via.placeholder.com/150" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img src="<?php echo !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150'; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                             </div>
                             <div class="col-md-9">
                                 <h5>Dados Pessoais</h5>
@@ -108,9 +108,63 @@ try {
                     </div>
                 </div>
 
-                <form id="editForm" class="card d-none" method="POST" action="dashboard.php">
+                <form id="editForm" class="card d-none" method="POST" action="dashboard.php" enctype="multipart/form-data">
                     <div class="card-body">
                         <h5 class="card-title">Editando Perfil</h5>
                         <div class="row">
-                           <div class="col-md-12 mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" name="nome" value="<?php echo htmlspecialchars($usuario['nome'] ?? ''); ?>"></div>
-                            <div class="col-md-6 mb-3"><label class="
+                            <div class="col-md-3 text-center mb-3">
+                                <img src="<?php echo !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150'; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                                <!-- Botão e input para alterar foto -->
+                                <input type="file" name="foto_perfil" accept="image/*" class="form-control form-control-sm mt-2">
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" name="nome" value="<?php echo htmlspecialchars($usuario['nome'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Data de Nascimento</label><input type="date" class="form-control" name="data_nascimento" value="<?php echo htmlspecialchars($usuario['data_nascimento'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">CPF *</label><input type="text" class="form-control" name="cpf" value="<?php echo htmlspecialchars($usuario['cpf'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Telefone</label><input type="text" class="form-control" name="telefone" value="<?php echo htmlspecialchars($usuario['telefone'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">LinkedIn</label><input type="text" class="form-control" name="linkedin" value="<?php echo htmlspecialchars($usuario['linkedin'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">CEP</label><input type="text" class="form-control" name="cep" value="<?php echo htmlspecialchars($usuario['cep'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Estado</label><input type="text" class="form-control" name="estado" value="<?php echo htmlspecialchars($usuario['estado'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Cidade</label><input type="text" class="form-control" name="cidade" value="<?php echo htmlspecialchars($usuario['cidade'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Bairro</label><input type="text" class="form-control" name="bairro" value="<?php echo htmlspecialchars($usuario['bairro'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Logradouro</label><input type="text" class="form-control" name="logradouro" value="<?php echo htmlspecialchars($usuario['logradouro'] ?? ''); ?>"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Número</label><input type="text" class="form-control" name="numero" value="<?php echo htmlspecialchars($usuario['numero'] ?? ''); ?>"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            <button id="cancelEdit" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <!-- Adicione este script antes do fechamento da tag </body> -->
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editButton = document.getElementById('editButton');
+    const infoDisplay = document.getElementById('infoDisplay');
+    const editForm = document.getElementById('editForm');
+    const cancelEdit = document.getElementById('cancelEdit');
+
+    if (editButton && infoDisplay && editForm) {
+        editButton.addEventListener('click', function() {
+            infoDisplay.classList.add('d-none');
+            editForm.classList.remove('d-none');
+        });
+    }
+    if (cancelEdit) {
+        cancelEdit.addEventListener('click', function(e) {
+            e.preventDefault();
+            editForm.classList.add('d-none');
+            infoDisplay.classList.remove('d-none');
+        });
+    }
+});
+</script>
+</body>
+</html>
