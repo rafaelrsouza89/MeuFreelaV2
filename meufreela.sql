@@ -36,9 +36,8 @@ CREATE TABLE vaga (
 CREATE TABLE candidatura (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
-    vaga_id INT NOT NULL,
-    data_candidatura DATETIME NOT NULL,
-    status ENUM('enviada', 'visualizada', 'rejeitada', 'aceita') NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
-    FOREIGN KEY (vaga_id) REFERENCES vaga(id) ON DELETE CASCADE
+    id_vaga INT NOT NULL,
+    data_candidatura DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pendente','aceita','recusada') DEFAULT 'pendente',
+    UNIQUE KEY (id_usuario, id_vaga)
 );

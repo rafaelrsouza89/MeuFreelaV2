@@ -105,12 +105,51 @@ body {
 
 /* LISTAGEM DE VAGAS               */
 
-.job-listing-panel {
-    background-color: #ffffff;
-    padding: 2rem;
-    margin: 2rem auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+.job-card h3 {
+    color: #0d6efd;
+    margin-bottom: 0.5rem;
+}
+
+/* CORREÇÕES E CONSOLIDAÇÃO DE ESTILOS DO DASHBOARD */
+body {
+    background-color: #f8f9fa; /* Estilo de fundo do dashboard */
+}
+
+.sidebar {
+    background-color: #fff;
+    height: 100vh;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed; 
+    z-index: 1000;
+}
+.sidebar .nav-link {
+    color: #555;
+    font-weight: 500;
+}
+.sidebar .nav-link.active {
+    color: #0d6efd;
+    background-color: #e9f5ff;
+    border-right: 3px solid #0d6efd;
+}
+.info-display p {
+    margin-bottom: 0.75rem;
+}
+.info-display strong {
+    min-width: 160px;
+    display: inline-block;
+    color: #6c757d;
+}
+
+/* Estilo para a página de perfil do freelancer */
+.profile-section {
+    margin-bottom: 20px;
+}
+.profile-section h3 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    color: #0d6efd; 
 }
 
 .job-card {

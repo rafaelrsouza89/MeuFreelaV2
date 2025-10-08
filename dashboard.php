@@ -14,7 +14,7 @@ try {
     $usuario = $stmt_select->fetch();
 } catch (PDOException $e) { die("Erro ao carregar dados do perfil."); }
 
-// 2. DEPOIS PROCESSE O POST
+// 2. DEPOIS PROCESSE O POST (Lógica para o formulário de edição)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
     $data_nascimento = isset($_POST['data_nascimento']) && !empty($_POST['data_nascimento']) ? trim($_POST['data_nascimento']) : null;
@@ -28,58 +28,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logradouro = isset($_POST['logradouro']) ? trim($_POST['logradouro']) : null;
     $numero = isset($_POST['numero']) ? trim($_POST['numero']) : null;
 
-    // NOVO: Processamento do upload da foto
+    // NOVO: Adiciona campos de Freelancer, se estiverem no POST
+    $is_freelancer = in_array(strtolower($usuario['tipo_usuario']), ['freelancer', 'ambos']);
+    
+    $biografia = $is_freelancer && isset($_POST['biografia']) ? trim($_POST['biografia']) : $usuario['biografia'];
+    $especialidades = $is_freelancer && isset($_POST['especialidades']) ? trim($_POST['especialidades']) : $usuario['especialidades'];
+    $portfolio_url = $is_freelancer && isset($_POST['portfolio_url']) ? trim($_POST['portfolio_url']) : $usuario['portfolio_url'];
+
+
+    // Processamento do upload da foto
     $foto_perfil = $usuario['foto_perfil']; // valor atual do banco
     if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
         $nome_arquivo = 'foto_' . $id_usuario . '_' . time() . '.' . $ext;
         $caminho_destino = 'uploads/' . $nome_arquivo;
 
-        // Cria a pasta uploads se não existir
         if (!is_dir('uploads')) {
             mkdir('uploads', 0777, true);
         }
 
         if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_destino)) {
             $foto_perfil = $caminho_destino;
+            
+            // Opcional: Remover foto antiga 
+            if (!empty($usuario['foto_perfil']) && $usuario['foto_perfil'] !== 'default-avatar.png' && file_exists($usuario['foto_perfil'])) {
+                @unlink($usuario['foto_perfil']);
+            }
         }
     }
 
     try {
-        $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero, foto_perfil = :foto_perfil WHERE id = :id_usuario";
+        // CORREÇÃO E CONSOLIDAÇÃO: Adiciona os campos de Freelancer no SQL de UPDATE
+        $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero, foto_perfil = :foto_perfil, biografia = :biografia, especialidades = :especialidades, portfolio_url = :portfolio_url WHERE id = :id_usuario";
         $stmt_update = $pdo->prepare($sql_update);
         $stmt_update->execute([
-            'nome' => $nome, 'data_nascimento' => $data_nascimento, 'cpf' => $cpf, 'telefone' => $telefone, 'linkedin' => $linkedin,
-            'cep' => $cep, 'estado' => $estado, 'cidade' => $cidade, 'bairro' => $bairro, 'logradouro' => $logradouro, 'numero' => $numero,
+            'nome' => $nome, 
+            'data_nascimento' => $data_nascimento, 
+            'cpf' => $cpf, 
+            'telefone' => $telefone, 
+            'linkedin' => $linkedin,
+            'cep' => $cep, 
+            'estado' => $estado, 
+            'cidade' => $cidade, 
+            'bairro' => $bairro, 
+            'logradouro' => $logradouro, 
+            'numero' => $numero,
             'foto_perfil' => $foto_perfil,
+            'biografia' => $biografia,
+            'especialidades' => $especialidades,
+            'portfolio_url' => $portfolio_url,
             'id_usuario' => $id_usuario
         ]);
+        
         $_SESSION['user_name'] = $nome;
         $message = '<div class="alert alert-success">Perfil atualizado com sucesso!</div>';
 
-        // Atualize $usuario para refletir as alterações imediatamente
-        $usuario['foto_perfil'] = $foto_perfil;
-        $usuario['nome'] = $nome;
-        $usuario['data_nascimento'] = $data_nascimento;
-        $usuario['cpf'] = $cpf;
-        $usuario['telefone'] = $telefone;
-        $usuario['linkedin'] = $linkedin;
-        $usuario['cep'] = $cep;
-        $usuario['estado'] = $estado;
-        $usuario['cidade'] = $cidade;
-        $usuario['bairro'] = $bairro;
-        $usuario['logradouro'] = $logradouro;
-        $usuario['numero'] = $numero;
+        // Recarrega $usuario para refletir as alterações
+        $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
+        $stmt_select = $pdo->prepare($sql_select);
+        $stmt_select->execute(['id_usuario' => $id_usuario]);
+        $usuario = $stmt_select->fetch();
 
     } catch (PDOException $e) {
         $message = '<div class="alert alert-danger">Erro ao atualizar o perfil.</div>';
     }
 }
 
-// Adicione este trecho após buscar o usuário do banco:
+// Lógica para mostrar o botão 'Procurar Vagas' e campos de freelancer
 $mostrarBotaoProcurarVagas = false;
-if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['freelance', 'ambos'])) {
-    $mostrarBotaoProcurarVagas = true;
+$is_freelancer_db = false;
+if (isset($usuario['tipo_usuario'])) {
+    if (in_array($usuario['tipo_usuario'], ['freelancer', 'ambos'])) {
+        $mostrarBotaoProcurarVagas = true;
+        $is_freelancer_db = true;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -88,14 +110,7 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background-color: #fff; height: 100vh; padding-top: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-        .sidebar .nav-link { color: #555; font-weight: 500; }
-        .sidebar .nav-link.active { color: #0d6efd; background-color: #e9f5ff; border-right: 3px solid #0d6efd; }
-        .info-display p { margin-bottom: 0.75rem; }
-        .info-display strong { min-width: 160px; display: inline-block; color: #6c757d; }
-    </style>
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body>
     <div class="container-fluid">
@@ -105,7 +120,10 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
                     <h4 class="px-3">MeuFreela</h4>
                     <ul class="nav flex-column">
                         <li class="nav-item"><a class="nav-link active" href="dashboard.php">Meu Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="minhas_vagas.php">Minhas Vagas</a></li>
+                        <?php if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['contratante', 'ambos'])): ?>
+                            <li class="nav-item"><a class="nav-link" href="minhas_vagas.php">Minhas Vagas</a></li>
+                        <?php endif; ?>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
                     </ul>
                 </div>
             </nav>
@@ -127,7 +145,11 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
                     <div class="card-body">
                          <div class="row">
                             <div class="col-md-3 text-center">
-                                <img src="<?php echo !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150'; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                <?php
+                                $foto_display = !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150';
+                                ?>
+                                <img src="<?php echo $foto_display; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                <p class="text-muted small">Tipo de Conta: <?php echo ucfirst(htmlspecialchars($usuario['tipo_usuario'] ?? 'Não informado')); ?></p>
                             </div>
                             <div class="col-md-9">
                                 <h5>Dados Pessoais</h5>
@@ -148,6 +170,16 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
                                     <p><strong>Bairro:</strong> <?php echo htmlspecialchars($usuario['bairro'] ?? 'Não informado'); ?></p>
                                     <p><strong>Cidade/Estado:</strong> <?php echo htmlspecialchars($usuario['cidade'] ?? 'Não informado'); ?>/<?php echo htmlspecialchars($usuario['estado'] ?? 'SC'); ?></p>
                                 </div>
+                                
+                                <?php if ($is_freelancer_db): ?>
+                                    <hr>
+                                    <h5>Informações de Freelancer</h5>
+                                    <div class="info-display">
+                                        <p><strong>Biografia:</strong> <?php echo nl2br(htmlspecialchars($usuario['biografia'] ?? 'Não informado')); ?></p>
+                                        <p><strong>Especialidades:</strong> <?php echo htmlspecialchars($usuario['especialidades'] ?? 'Não informado'); ?></p>
+                                        <p><strong>Portfólio:</strong> <?php echo !empty($usuario['portfolio_url']) ? '<a href="' . htmlspecialchars($usuario['portfolio_url']) . '" target="_blank">Ver Portfólio</a>' : 'Não informado'; ?></p>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -158,8 +190,7 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
                         <h5 class="card-title">Editando Perfil</h5>
                         <div class="row">
                             <div class="col-md-3 text-center mb-3">
-                                <img src="<?php echo !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150'; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
-                                <!-- Botão e input para alterar foto -->
+                                <img src="<?php echo $foto_display; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
                                 <input type="file" name="foto_perfil" accept="image/*" class="form-control form-control-sm mt-2">
                             </div>
                             <div class="col-md-9">
@@ -176,6 +207,24 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
                                     <div class="col-md-6 mb-3"><label class="form-label">Logradouro</label><input type="text" class="form-control" name="logradouro" value="<?php echo htmlspecialchars($usuario['logradouro'] ?? ''); ?>"></div>
                                     <div class="col-md-6 mb-3"><label class="form-label">Número</label><input type="text" class="form-control" name="numero" value="<?php echo htmlspecialchars($usuario['numero'] ?? ''); ?>"></div>
                                 </div>
+                                
+                                <?php if ($is_freelancer_db): ?>
+                                    <hr class="my-4">
+                                    <h4 class="mb-3">Informações de Freelancer</h4>
+                                    <div class="mb-3">
+                                        <label for="biografia" class="form-label">Biografia / Resumo Profissional:</label>
+                                        <textarea class="form-control" id="biografia" name="biografia" rows="5"><?php echo htmlspecialchars($usuario['biografia'] ?? ''); ?></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="especialidades" class="form-label">Especialidades (separadas por vírgula):</label>
+                                        <input type="text" class="form-control" id="especialidades" name="especialidades" value="<?php echo htmlspecialchars($usuario['especialidades'] ?? ''); ?>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="portfolio_url" class="form-label">Link do Portfólio:</label>
+                                        <input type="text" class="form-control" id="portfolio_url" name="portfolio_url" value="<?php echo htmlspecialchars($usuario['portfolio_url'] ?? ''); ?>">
+                                    </div>
+                                <?php endif; ?>
+                                
                             </div>
                         </div>
                         <div class="mb-3">
@@ -187,8 +236,6 @@ if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['free
             </main>
         </div>
     </div>
-
-    <!-- Adicione este script antes do fechamento da tag </body> -->
     <script>
 document.addEventListener('DOMContentLoaded', function() {
     const editButton = document.getElementById('editButton');

@@ -10,9 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = $stmt->fetch();
     if ($usuario && password_verify($senha, $usuario['senha'])) {
         $_SESSION['user_id'] = $usuario['id'];
-        $_SESSION['user_name'] = $usuario['nome'];
-        $_SESSION['user_type'] = $usuario['tipo_usuario'];
-        header('Location: dashboard.php'); exit();
+        $_SESSION['tipo_usuario'] = $usuario['tipo_usuario'];
+        header('Location: dashboard.php');
+        exit();
     } else {
         header('Location: login.php?error=invalid'); exit();
     }

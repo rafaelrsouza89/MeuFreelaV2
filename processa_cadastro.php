@@ -15,8 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $sql_insert = "INSERT INTO usuario (nome, email, senha, telefone, tipo_usuario, data_cadastro) VALUES (:nome, :email, :senha, :telefone, :tipo_usuario, NOW())";
         $stmt_insert = $pdo->prepare($sql_insert);
-        $stmt_insert->execute(['nome' => $nome, 'email' => $email, 'senha' => $senha_hash, 'telefone' => $telefone, 'tipo_usuario' => $tipo_usuario]);
-        header('Location: login.php?status=success'); exit();
+        if ($stmt_insert->execute(['nome' => $nome, 'email' => $email, 'senha' => $senha_hash, 'telefone' => $telefone, 'tipo_usuario' => $tipo_usuario])) {
+            $novo_id_usuario = $pdo->lastInsertId();
+            $_SESSION['user_id'] = $novo_id_usuario;
+            $_SESSION['tipo_usuario'] = $_POST['tipo_usuario']; // GARANTE QUE ESTÁ DEFINIDO
+            header('Location: dashboard.php');
+            exit();
+        }
     } catch (PDOException $e) { header('Location: cadastro.php?status=error'); exit(); }
 }
 ?>

@@ -1,3 +1,20 @@
+<?php
+session_start();
+require_once 'includes/db.php';
+
+$usuario = null; // Inicializa para evitar warnings
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // ...busca usuário no banco...
+    // $usuario = resultado da busca
+}
+
+// Só use $usuario['campo'] se $usuario não for null
+if ($usuario && isset($usuario['tipo_usuario'])) {
+    // use normalmente
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

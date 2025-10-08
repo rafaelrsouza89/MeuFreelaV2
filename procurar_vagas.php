@@ -82,9 +82,15 @@ try {
 </a>
 </html>
 
-<?php if ($_SESSION['tipo_usuario'] === 'freelance' || $_SESSION['tipo_usuario'] === 'ambos'): ?>
+<?php
+if (isset($_SESSION['tipo_usuario']) && 
+    ($_SESSION['tipo_usuario'] === 'freelance' || $_SESSION['tipo_usuario'] === 'ambos')) {
+    // Mostra botão ou funcionalidade para freelancer/ambos
+    ?>
     <form action="candidatar_vaga.php" method="POST">
         <input type="hidden" name="id_vaga" value="<?= $vaga['id'] ?>">
         <button type="submit" class="btn btn-primary">Candidatar-se</button>
     </form>
-<?php endif; ?>
+    <?php
+}
+?>

@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['tipo_usuario'], ['contratante', 'ambos'])) {
+// CORREÇÃO: Usar $_SESSION['user_type'] em vez de $_SESSION['tipo_usuario']
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
     header('Location: login.php');
     exit();
 }
@@ -12,6 +13,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['tipo_usuario'], ['contr
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicar Vaga - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <main class="container py-5">
@@ -57,40 +59,3 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['tipo_usuario'], ['contr
     &larr; Voltar
 </a>
 </html>
-
-<?php
-// Código para alterar a tabela do usuário, adicionando novas colunas
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "meufreela";
-
-// Criar conexão
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexão
-if ($conn->connect_error) {
-    die("Conexão falhou: " . $conn->connect_error);
-}
-
-// SQL para adicionar colunas à tabela usuario
-$sql = "ALTER TABLE usuario
-ADD COLUMN foto_perfil VARCHAR(255) NULL,
-ADD COLUMN data_nascimento DATE NULL,
-ADD COLUMN cpf VARCHAR(20) NULL,
-ADD COLUMN linkedin VARCHAR(255) NULL,
-ADD COLUMN cep VARCHAR(20) NULL,
-ADD COLUMN estado VARCHAR(50) NULL,
-ADD COLUMN cidade VARCHAR(100) NULL,
-ADD COLUMN bairro VARCHAR(100) NULL,
-ADD COLUMN logradouro VARCHAR(100) NULL,
-ADD COLUMN numero VARCHAR(10) NULL;";
-
-if ($conn->query($sql) === TRUE) {
-    echo "Colunas adicionadas com sucesso à tabela usuario.";
-} else {
-    echo "Erro ao adicionar colunas: " . $conn->error;
-}
-
-$conn->close();
-?>
