@@ -85,11 +85,7 @@ try {
     &larr; Voltar
 </a>
 </html>
+
 <?php
-// CORREÇÃO: Coluna 'c.id_vaga' foi alterada para 'c.vaga_id'
-$stmt = $pdo->prepare("SELECT c.*, u.nome FROM candidatura c JOIN usuario u ON c.id_usuario = u.id WHERE c.vaga_id = ?");
-$stmt->execute([$vaga['id']]);
-while ($cand = $stmt->fetch()) {
-    echo "<li>{$cand['nome']} - {$cand['status']}</li>";
-}
+// O bloco de código de teste que causava o Warning na linha 91 foi removido.
 ?>
