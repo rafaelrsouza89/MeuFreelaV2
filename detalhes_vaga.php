@@ -1,15 +1,26 @@
 <?php
 session_start();
 require_once 'includes/db.php';
+
 $id_vaga = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$id_vaga) { die("Vaga não encontrada."); }
+
+if (!$id_vaga) { 
+    die("Vaga não encontrada."); 
+}
+
 try {
     $sql = "SELECT v.*, u.nome AS nome_contratante FROM vaga AS v JOIN usuario AS u ON v.id_usuario = u.id WHERE v.id = :id_vaga";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id_vaga' => $id_vaga]);
     $vaga = $stmt->fetch();
-    if (!$vaga) { die("Vaga não encontrada."); }
-} catch (PDOException $e) { die("Erro ao consultar a vaga."); }
+    
+    if (!$vaga) { 
+        die("Vaga não encontrada."); 
+    }
+    
+} catch (PDOException $e) { 
+    die("Erro ao consultar a vaga."); 
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -17,8 +28,7 @@ try {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes: <?php echo htmlspecialchars($vaga['titulo']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
@@ -47,7 +57,13 @@ try {
                 <h5 class="card-title">Descrição da Vaga</h5>
                 <p class="card-text"><?php echo nl2br(htmlspecialchars($vaga['descricao'])); ?></p>
 
-                <?php if (isset($_SESSION['user_id']) && (strtolower($_SESSION['user_type']) === 'freelancer' || strtolower($_SESSION['user_type']) === 'ambos')): ?>
+                <?php 
+                // CORREÇÃO: Verifica se 'user_id' e 'user_type' estão definidos antes de usá-los.
+                $is_freelancer_or_ambos = isset($_SESSION['user_type']) && 
+                                          (strtolower($_SESSION['user_type']) === 'freelancer' || 
+                                           strtolower($_SESSION['user_type']) === 'ambos');
+                                           
+                if (isset($_SESSION['user_id']) && $is_freelancer_or_ambos): ?>
                     <form action="processa_candidatura.php" method="POST" class="mt-4">
                         <input type="hidden" name="vaga_id" value="<?php echo $vaga['id']; ?>">
                         <button type="submit" class="btn btn-success btn-lg">Candidatar-se a esta Vaga</button>
