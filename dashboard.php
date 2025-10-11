@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logradouro = isset($_POST['logradouro']) ? trim($_POST['logradouro']) : null;
     $numero = isset($_POST['numero']) ? trim($_POST['numero']) : null;
 
-    // NOVO: Adiciona campos de Freelancer, se estiverem no POST
+    // Lógica para campos de Freelancer (Visível e processado apenas se for Freelancer ou Ambos)
     $is_freelancer = in_array(strtolower($usuario['tipo_usuario']), ['freelancer', 'ambos']);
     
     $biografia = $is_freelancer && isset($_POST['biografia']) ? trim($_POST['biografia']) : $usuario['biografia'];
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_destino)) {
             $foto_perfil = $caminho_destino;
             
-            // Opcional: Remover foto antiga 
+            // Remove foto antiga se existir
             if (!empty($usuario['foto_perfil']) && $usuario['foto_perfil'] !== 'default-avatar.png' && file_exists($usuario['foto_perfil'])) {
                 @unlink($usuario['foto_perfil']);
             }
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // CORREÇÃO E CONSOLIDAÇÃO: Adiciona os campos de Freelancer no SQL de UPDATE
+        // Atualiza todos os campos de Usuário e Freelancer no SQL
         $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero, foto_perfil = :foto_perfil, biografia = :biografia, especialidades = :especialidades, portfolio_url = :portfolio_url WHERE id = :id_usuario";
         $stmt_update = $pdo->prepare($sql_update);
         $stmt_update->execute([
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Lógica para mostrar o botão 'Procurar Vagas' e campos de freelancer
+// Lógica para controlar o que mostrar no dashboard (Freelancer ou Ambos podem procurar vagas)
 $mostrarBotaoProcurarVagas = false;
 $is_freelancer_db = false;
 if (isset($usuario['tipo_usuario'])) {
@@ -110,8 +110,7 @@ if (isset($usuario['tipo_usuario'])) {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-</head>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <div class="container-fluid">
         <div class="row">

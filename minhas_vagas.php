@@ -1,14 +1,23 @@
 <?php
 session_start();
 require_once 'includes/db.php';
-if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
+
+if (!isset($_SESSION['user_id'])) { 
+    header('Location: login.php'); 
+    exit(); 
+}
+
 $id_contratante = $_SESSION['user_id'];
+$error_message = '';
+
 try {
     $sql = "SELECT v.id, v.titulo, COUNT(c.id) AS total_candidaturas FROM vaga AS v LEFT JOIN candidatura AS c ON v.id = c.vaga_id WHERE v.id_usuario = :id_contratante GROUP BY v.id ORDER BY v.data_publicacao DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id_contratante' => $id_contratante]);
     $vagas = $stmt->fetchAll();
-} catch (PDOException $e) { $error_message = "Erro ao carregar suas vagas."; }
+} catch (PDOException $e) { 
+    $error_message = "Erro ao carregar suas vagas."; 
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -16,14 +25,7 @@ try {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Vagas - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background-color: #fff; height: 100vh; padding-top: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-        .sidebar .nav-link { color: #555; font-weight: 500; }
-        .sidebar .nav-link.active { color: #0d6efd; background-color: #e9f5ff; border-right: 3px solid #0d6efd; }
-    </style>
-</head>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -33,6 +35,7 @@ try {
                     <ul class="nav flex-column">
                         <li class="nav-item"><a class="nav-link" href="dashboard.php">Meu Perfil</a></li>
                         <li class="nav-item"><a class="nav-link active" href="minhas_vagas.php">Minhas Vagas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
                     </ul>
                 </div>
             </nav>
@@ -45,6 +48,10 @@ try {
 
                 <div class="card">
                     <div class="card-body">
+                        <?php if (!empty($error_message)): ?>
+                            <div class="alert alert-danger" role="alert"><?php echo $error_message; ?></div>
+                        <?php endif; ?>
+
                         <?php if (!empty($vagas)): ?>
                             <table class="table table-hover">
                                 <thead>
@@ -79,7 +86,8 @@ try {
 </a>
 </html>
 <?php
-$stmt = $pdo->prepare("SELECT c.*, u.nome FROM candidatura c JOIN usuario u ON c.id_usuario = u.id WHERE c.id_vaga = ?");
+// CORREÇÃO: Coluna 'c.id_vaga' foi alterada para 'c.vaga_id'
+$stmt = $pdo->prepare("SELECT c.*, u.nome FROM candidatura c JOIN usuario u ON c.id_usuario = u.id WHERE c.vaga_id = ?");
 $stmt->execute([$vaga['id']]);
 while ($cand = $stmt->fetch()) {
     echo "<li>{$cand['nome']} - {$cand['status']}</li>";
