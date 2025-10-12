@@ -48,14 +48,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidatos para <?php echo htmlspecialchars($titulo_vaga); ?> - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background-color: #fff; height: 100vh; padding-top: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-        .sidebar .nav-link { color: #555; font-weight: 500; }
-        .sidebar .nav-link.active { color: #0d6efd; background-color: #e9f5ff; border-right: 3px solid #0d6efd; }
-    </style>
-</head>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -65,6 +58,7 @@ try {
                     <ul class="nav flex-column">
                         <li class="nav-item"><a class="nav-link" href="dashboard.php">Meu Perfil</a></li>
                         <li class="nav-item"><a class="nav-link active" href="minhas_vagas.php">Minhas Vagas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
                     </ul>
                 </div>
             </nav>
@@ -111,7 +105,4 @@ try {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
 </html>
