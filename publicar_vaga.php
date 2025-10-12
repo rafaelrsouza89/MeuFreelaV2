@@ -27,6 +27,13 @@ if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
 </head>
 <body>
     <main class="container py-5">
+        
+        <div class="d-flex justify-content-end mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
+        </div>
+        
         <div class="card">
             <div class="card-body">
                 <h1 class="card-title">Publicar Nova Vaga</h1>
@@ -65,5 +72,4 @@ if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
