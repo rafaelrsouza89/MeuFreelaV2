@@ -1,26 +1,15 @@
 <?php
 session_start();
 require_once 'includes/db.php';
-
 $id_vaga = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if (!$id_vaga) { 
-    die("Vaga não encontrada."); 
-}
-
+if (!$id_vaga) { die("Vaga não encontrada."); }
 try {
     $sql = "SELECT v.*, u.nome AS nome_contratante FROM vaga AS v JOIN usuario AS u ON v.id_usuario = u.id WHERE v.id = :id_vaga";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id_vaga' => $id_vaga]);
     $vaga = $stmt->fetch();
-    
-    if (!$vaga) { 
-        die("Vaga não encontrada."); 
-    }
-    
-} catch (PDOException $e) { 
-    die("Erro ao consultar a vaga."); 
-}
+    if (!$vaga) { die("Vaga não encontrada."); }
+} catch (PDOException $e) { die("Erro ao consultar a vaga."); }
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -28,7 +17,8 @@ try {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes: <?php echo htmlspecialchars($vaga['titulo']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> </head>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
@@ -45,6 +35,12 @@ try {
     </nav>
 
     <main class="container py-5">
+        <div class="d-flex justify-content-end mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
+        </div>
+
         <div class="card">
             <div class="card-header">
                 <h1><?php echo htmlspecialchars($vaga['titulo']); ?></h1>
@@ -58,7 +54,6 @@ try {
                 <p class="card-text"><?php echo nl2br(htmlspecialchars($vaga['descricao'])); ?></p>
 
                 <?php 
-                // CORREÇÃO: Verifica se 'user_id' e 'user_type' estão definidos antes de usá-los.
                 $is_freelancer_or_ambos = isset($_SESSION['user_type']) && 
                                           (strtolower($_SESSION['user_type']) === 'freelancer' || 
                                            strtolower($_SESSION['user_type']) === 'ambos');
@@ -82,7 +77,4 @@ try {
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
 </html>
