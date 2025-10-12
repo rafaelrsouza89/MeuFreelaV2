@@ -122,6 +122,10 @@ if (isset($usuario['tipo_usuario'])) {
                         <?php if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['contratante', 'ambos'])): ?>
                             <li class="nav-item"><a class="nav-link" href="minhas_vagas.php">Minhas Vagas</a></li>
                         <?php endif; ?>
+                        <a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
+    &larr; Voltar
+</a>
+
                         <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
                     </ul>
                 </div>

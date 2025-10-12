@@ -1,11 +1,21 @@
 <?php
 session_start();
 
-// CORREÇÃO: Usar $_SESSION['user_type'] em vez de $_SESSION['tipo_usuario']
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
+// 1. Verifica se o usuário NÃO está logado. Se não estiver, redireciona para o login.
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
+
+// 2. Verifica se o usuário logado TEM permissão para publicar (Contratante ou Ambos).
+// Se NÃO tiver, redireciona para o dashboard com um erro.
+if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
+    // Redireciona para o painel de controle, pois o usuário já está logado
+    header('Location: dashboard.php?error=permission_denied');
+    exit();
+}
+
+// Se o código chegar até aqui, o usuário está logado E tem a permissão correta.
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -55,7 +65,5 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_type'], ['contrata
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
+
 </html>
