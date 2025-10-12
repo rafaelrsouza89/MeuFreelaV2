@@ -34,10 +34,16 @@ try {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8"><title>Vagas Disponíveis - MeuFreela</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body>
     <main class="container py-5">
+        <div class="d-flex justify-content-end mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
+        </div>
+        
         <div class="job-listing-panel">
             <h1 class="mb-4">Encontre uma Vaga</h1>
 
@@ -78,20 +84,4 @@ try {
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
 </html>
-
-<?php
-if (isset($_SESSION['tipo_usuario']) && 
-    ($_SESSION['tipo_usuario'] === 'freelance' || $_SESSION['tipo_usuario'] === 'ambos')) {
-    // Mostra botão ou funcionalidade para freelancer/ambos
-    ?>
-    <form action="candidatar_vaga.php" method="POST">
-        <input type="hidden" name="id_vaga" value="<?= $vaga['id'] ?>">
-        <button type="submit" class="btn btn-primary">Candidatar-se</button>
-    </form>
-    <?php
-}
-?>
