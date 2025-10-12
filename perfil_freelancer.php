@@ -32,22 +32,17 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Perfil de <?php echo htmlspecialchars($freelancer['nome']); ?></title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Estilos específicos para a página de perfil */
-        .profile-section {
-            margin-bottom: 20px;
-        }
-        .profile-section h3 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            color: #4a148c;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body>
-    <div class="container">
+    <div class="container py-5">
+        <div class="d-flex justify-content-end mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
+        </div>
+        
         <h1>Perfil de Freelancer</h1>
         
         <div class="profile-section">
@@ -77,10 +72,6 @@ try {
             </div>
         <?php endif; ?>
         
-        <a href="javascript:history.back()">Voltar</a>
     </div>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
 </html>
