@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-light">
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5">
+                <div class="d-flex justify-content-end mt-4 mb-2">
+                    <button onclick="history.back()" class="btn btn-outline-secondary">
+                        &larr; Voltar
+                    </button>
+                </div>
                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Recuperar Senha</h3></div>
                     <div class="card-body">
@@ -41,7 +45,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<a href="index.php" class="btn btn-outline-secondary mt-4 mb-2 d-inline-block">
-    &larr; Voltar
-</a>
 </html>
