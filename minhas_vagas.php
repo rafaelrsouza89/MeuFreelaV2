@@ -25,7 +25,8 @@ try {
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Vagas - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> </head>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -66,7 +67,22 @@ try {
                                     <tr>
                                         <td><?php echo htmlspecialchars($vaga['titulo']); ?></td>
                                         <td><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?></span></td>
-                                        <td><a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-outline-primary">Ver Candidatos</a></td>
+                                        <td>
+                                            <a href="editar_vaga.php?id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-info me-2 text-white" title="Editar Vaga">
+                                                Editar
+                                            </a>
+
+                                            <form method="POST" action="processa_exclusao_vaga.php" style="display:inline-block;" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir esta vaga? Esta ação é irreversível.');">
+                                                <input type="hidden" name="vaga_id" value="<?php echo $vaga['id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger me-2" title="Excluir Vaga">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                            
+                                            <a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                                Ver Candidatos
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
