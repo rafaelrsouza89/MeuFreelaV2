@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-// Linhas de DEBUG removidas:
-// echo "Tipo de Usuário lido: " . $_SESSION['user_type'];
-// exit(); 
-
 // 1. Verifica se o usuário NÃO está logado. Se não estiver, redireciona para o login.
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -28,9 +24,9 @@ if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
     <title>Publicar Vaga - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-</head>
+ </head>
 <body>
-    <main class="container py-5">
+    <main class="container py-5 flex-grow-1">
         
         <div class="d-flex justify-content-end mb-4">
             <button onclick="history.back()" class="btn btn-outline-secondary">

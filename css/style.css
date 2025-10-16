@@ -190,3 +190,28 @@ body {
     display: inline-block;
     color: #6c757d;
 }
+/* Fundo Principal (Divisão Principal) */
+body {
+    background-color: #2c77da; /* AliceBlue, um azul pastel muito suave */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* O Card da Vaga (Divisão Lateral/Foco) */
+.card {
+    border: 1px solid #2c77da; /* LightSteelBlue, uma borda sutilmente mais escura */
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(176, 196, 222, 0.4); /* Sombra azulada suave */
+}
+
+/* Ajuste do botão primário para combinar com o tom azulado */
+.btn-primary {
+    background-color: #4682b4; /* SteelBlue, um azul mais forte para contraste */
+    border-color: #4682b4;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: #5f9ea0; /* CadetBlue */
+    border-color: #5f9ea0;
+}

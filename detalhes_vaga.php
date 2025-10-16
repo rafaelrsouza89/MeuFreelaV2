@@ -18,6 +18,7 @@ try {
     <title>Detalhes: <?php echo htmlspecialchars($vaga['titulo']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+  
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
