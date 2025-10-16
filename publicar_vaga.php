@@ -1,6 +1,7 @@
 <?php
 session_start();
-
+echo "Tipo de Usuário lido: " . $_SESSION['user_type'];
+exit(); 
 // 1. Verifica se o usuário NÃO está logado. Se não estiver, redireciona para o login.
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');

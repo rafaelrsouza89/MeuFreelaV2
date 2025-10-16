@@ -10,6 +10,9 @@ if (!isset($_SESSION['user_id'])) {
 $id_contratante = $_SESSION['user_id'];
 $error_message = '';
 
+// Variável para controlar a exibição do botão de publicação
+$can_publish = in_array(strtolower($_SESSION['user_type'] ?? ''), ['contratante', 'ambos']);
+
 try {
     $sql = "SELECT v.id, v.titulo, COUNT(c.id) AS total_candidaturas FROM vaga AS v LEFT JOIN candidatura AS c ON v.id = c.vaga_id WHERE v.id_usuario = :id_contratante GROUP BY v.id ORDER BY v.data_publicacao DESC";
     $stmt = $pdo->prepare($sql);
@@ -44,7 +47,11 @@ try {
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Minhas Vagas Publicadas</h1>
-                    <a href="publicar_vaga.php" class="btn btn-primary">Publicar Nova Vaga</a>
+                    
+                    <!-- CORREÇÃO APLICADA: SÓ MOSTRA O BOTÃO SE HOUVER PERMISSÃO -->
+                    <?php if ($can_publish): ?>
+                        <a href="publicar_vaga.php" class="btn btn-primary">Publicar Nova Vaga</a>
+                    <?php endif; ?>
                 </div>
 
                 <div class="card">
@@ -68,6 +75,7 @@ try {
                                         <td><?php echo htmlspecialchars($vaga['titulo']); ?></td>
                                         <td><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?></span></td>
                                         <td>
+                                            <!-- Botões de Ação (Editar, Excluir, Ver Candidatos) -->
                                             <a href="editar_vaga.php?id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-info me-2 text-white" title="Editar Vaga">
                                                 Editar
                                             </a>

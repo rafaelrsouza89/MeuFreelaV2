@@ -2,8 +2,9 @@
 session_start();
 require_once 'includes/db.php';
 
-// Novamente, verificamos a sessão e a permissão do usuário
+// 1. VERIFICAÇÃO DE PERMISSÃO E LOGIN
 if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] !== 'contratante' && $_SESSION['user_type'] !== 'ambos')) {
+    // Se não estiver logado ou não tiver permissão de contratante/ambos
     header('Location: login.php');
     exit();
 }
@@ -14,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = trim($_POST['titulo']);
     $descricao = trim($_POST['descricao']);
     $tipo_vaga = $_POST['tipo_vaga'];
-    $remuneracao = $_POST['remuneracao'] ?: 0.00; // Se vazio, assume 0.00
+    $remuneracao = $_POST['remuneracao'] ?: 0.00; 
     $local = trim($_POST['local']);
     $data_limite = $_POST['data_limite'];
 
-    // Validação simples (pode ser expandida conforme a necessidade)
+    // 2. VALIDAÇÃO DE CAMPOS
     if (empty($titulo) || empty($descricao) || empty($local) || empty($data_limite)) {
-        header('Location: publicar_vaga.php?error=emptyfields');
+        header('Location: publicar_vaga.php?error=emptyfields'); 
         exit();
     }
 
@@ -30,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $stmt = $pdo->prepare($sql);
         
-        $stmt->execute([
+        // EXECUTA A INSERÇÃO
+        $success = $stmt->execute([
             'id_usuario' => $id_usuario,
             'titulo' => $titulo,
             'descricao' => $descricao,
@@ -40,17 +42,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'data_limite' => $data_limite
         ]);
 
-        // Redireciona para o dashboard com mensagem de sucesso
-        header('Location: dashboard.php?status=vaga_publicada');
-        exit();
+        // 3. REDIRECIONAMENTO DE SUCESSO: Redireciona para a lista de Minhas Vagas
+        if ($success) {
+            // CORRIGIDO: Agora redireciona para a lista de vagas do contratante
+            header('Location: minhas_vagas.php?status=vaga_publicada'); 
+            exit();
+        } else {
+            header('Location: publicar_vaga.php?error=dberror_execution');
+            exit();
+        }
 
     } catch (PDOException $e) {
-        // Log do erro (ideal para produção)
-        // error_log($e->getMessage());
-        header('Location: publicar_vaga.php?error=dberror');
+        // 4. REDIRECIONAMENTO DE ERRO: Volta para o formulário com a mensagem de erro
+        error_log("PDO ERROR: " . $e->getMessage()); // Registra o erro para debug
+        header('Location: publicar_vaga.php?error=dberror_pdo');
         exit();
     }
 } else {
+    // Se o acesso for direto sem POST
     header('Location: index.php');
     exit();
 }
