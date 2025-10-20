@@ -1,5 +1,4 @@
-
-/* ESTILO GERAL (RESET)             */
+/* ESTILO GERAL (RESET)           */
 
 body, h1, h2, h3, p, a {
     margin: 0;
@@ -8,7 +7,8 @@ body, h1, h2, h3, p, a {
 }
 
 body {
-    background-color: #89baeb;
+    /* Novo Fundo Principal (Azul Muito Claro) */
+    background-color: #ecf5ff; 
     color: #333;
 }
 
@@ -22,9 +22,11 @@ body {
 /* CABEÇALHO                   */
 
 .main-header {
-    background-color:#89baeb;
+    /* Fundo do cabeçalho leve */
+    background-color: #ffffff;
     padding: 1rem 0;
-    border-bottom: 1px solid #02446b;
+    /* Borda sutilmente mais clara */
+    border-bottom: 1px solid #a0c3e6;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -37,7 +39,8 @@ body {
 .logo {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #0d6efd; 
+    /* Novo Azul Profundo para o Logo */
+    color: #004e8d; 
     text-decoration: none;
 }
 
@@ -50,26 +53,30 @@ body {
 }
 
 .main-nav a:hover {
-    color: #0d6efd;
+    /* Novo Azul Vibrante para Hover */
+    color: #1976d2;
 }
 
 .button-primary {
-    background-color: #89baeb;
+    /* Novo Azul Vibrante para o CTA */
+    background-color: #1976d2;
     color: white !important;
     padding: 0.7rem 1.5rem;
     border-radius: 50px;
 }
 
 .button-primary:hover {
-    background-color: #89baeb; 
+    /* Azul Secundário para Hover */
+    background-color: #004e8d; 
 }
 
 
-/* SEÇÃO DE BUSCA (HOMEPAGE)           */
+/* SEÇÃO DE BUSCA (HOMEPAGE)          */
 
 .hero-section {
-    background-color: #89baeb;
-    color: white;
+    /* Mantém o Fundo Principal Claro */
+    background-color: #ecf5ff;
+    color: #004e8d; /* Texto no Azul Profundo */
     padding: 4rem 0;
     text-align: center;
 }
@@ -97,22 +104,25 @@ body {
     padding: 1rem 2rem;
     font-size: 1rem;
     border: none;
-    background-color: #89baeb;
+    /* Botão de Busca no Novo Azul Vibrante */
+    background-color: #1976d2;
     color: white;
     cursor: pointer;
     border-radius: 0 50px 50px 0;
 }
 
-/* LISTAGEM DE VAGAS               */
+/* LISTAGEM DE VAGAS             */
 
 .job-card h3 {
-    color: #89baeb;
+    /* Título da vaga no Azul Profundo */
+    color: #004e8d;
     margin-bottom: 0.5rem;
 }
 
 /* CORREÇÕES E CONSOLIDAÇÃO DE ESTILOS DO DASHBOARD */
 body {
-    background-color: #f8f9fa; /* Estilo de fundo do dashboard */
+    /* Fundo do dashboard - Fundo Principal Claro */
+    background-color: #ecf5ff;
 }
 
 .sidebar {
@@ -128,9 +138,12 @@ body {
     font-weight: 500;
 }
 .sidebar .nav-link.active {
-    color: #0d6efd;
-    background-color: #e9f5ff;
-    border-right: 3px solid #95b9ef;
+    /* Ativo no Azul Profundo */
+    color: #004e8d;
+    /* Fundo ativo leve */
+    background-color: #e6f1fe;
+    /* Borda ativa no Azul Vibrante */
+    border-right: 3px solid #1976d2;
 }
 .info-display p {
     margin-bottom: 0.75rem;
@@ -146,53 +159,32 @@ body {
     margin-bottom: 20px;
 }
 .profile-section h3 {
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #a0c3e6;
     padding-bottom: 5px;
     margin-bottom: 10px;
-    color: #0d6efd; 
+    /* Título da Seção no Azul Profundo */
+    color: #004e8d; 
 }
 
 .job-card {
-    border: 1px solid #e0e0e0;
+    /* Borda sutil */
+    border: 1px solid #a0c3e6;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     border-radius: 8px;
+    background-color: #ffffff;
 }
 
 .job-card h3 {
-    color: #0d6efd;
+    /* Título no Azul Profundo */
+    color:#004e8d;
     margin-bottom: 0.5rem;
 }
-body {
-    background-color: #f8f9fa;
-}
-.sidebar {
-    background-color: #fff;
-    height: 100vh;
-    padding-top: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    position: fixed; /* Adicionado para fixar o menu */
-}
-.sidebar .nav-link {
-    color: #555;
-    font-weight: 500;
-}
-.sidebar .nav-link.active {
-    color: #0d6efd;
-    background-color: #e9f5ff;
-    border-right: 3px solid #89baeb;
-}
-.info-display p {
-    margin-bottom: 0.75rem;
-}
-.info-display strong {
-    min-width: 160px;
-    display: inline-block;
-    color: #6c757d;
-}
+
 /* Fundo Principal (Divisão Principal) */
 body {
-    background-color: #89baeb; /* AliceBlue, um azul pastel muito suave */
+    /* Fundo Principal Claro */
+    background-color: #ecf5ff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -200,18 +192,22 @@ body {
 
 /* O Card da Vaga (Divisão Lateral/Foco) */
 .card {
-    border: 1px solid #89baeb; /* LightSteelBlue, uma borda sutilmente mais escura */
+    /* Borda no Azul Cinzento Claro */
+    border: 1px solid #a0c3e6;
     border-radius: 0.75rem;
-    box-shadow: 0 4px 12px rgba(176, 196, 222, 0.4); /* Sombra azulada suave */
+    /* Sombra azulada suave */
+    box-shadow: 0 4px 12px rgba(160, 195, 230, 0.4); 
 }
 
 /* Ajuste do botão primário para combinar com o tom azulado */
 .btn-primary {
-    background-color: #4682b4; /* SteelBlue, um azul mais forte para contraste */
-    border-color: #4682b4;
+    /* Botão no Azul Vibrante */
+    background-color: #1976d2;
+    border-color: #1976d2;
     transition: background-color 0.2s, border-color 0.2s;
 }
 .btn-primary:hover {
-    background-color: #5f9ea0; /* CadetBlue */
-    border-color: #5f9ea0;
+    /* Botão no Azul Profundo */
+    background-color: #004e8d; 
+    border-color: #004e8d;
 }
