@@ -136,10 +136,10 @@ if (isset($usuario['tipo_usuario'])) {
                     <h1 class="h2">Meu Perfil</h1>
                     <div>
                         <button id="editButton" class="btn btn-outline-primary">Editar Perfil</button>
-                       <?php else: // Freelancer ?>
-                <li><a href="procurar_vagas.php">Procurar Vagas</a></li>
-                <li><a href="minhas_candidaturas.php">Minhas Candidaturas</a></li>
-            <?php endif; ?>
+                        <?php if ($mostrarBotaoProcurarVagas): ?>
+                            <a href="procurar_vagas.php" class="btn btn-success ms-2">Procurar Vagas</a>
+                            <a href="minhas_candidaturas.php">Minhas Candidaturas</a>
+                        <?php endif; ?>
                     </div>
                 </div>
 

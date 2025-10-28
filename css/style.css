@@ -211,3 +211,77 @@ body {
     background-color: #004e8d; 
     border-color: #004e8d;
 }
+
+/* ========================================= */
+/* ESTILOS DO DASHBOARD E SIDEBAR (BOTÕES)   */
+/* ========================================= */
+
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar em telas pequenas */
+}
+
+/* O menu lateral (sidebar) */
+.sidebar {
+    width: 250px; /* Largura fixa */
+    background-color: #ffffff;
+    padding: 20px;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    /* Em telas menores, pode ocupar a largura total */
+    flex-shrink: 0;
+}
+
+/* O conteúdo principal */
+.content {
+    flex: 1; /* Ocupa todo o espaço restante */
+    padding: 20px;
+    background-color: #f4f7f6; /* Fundo do conteúdo */
+    min-width: 300px; /* Garante que não fique muito espremido */
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 8px; /* Espaço entre os botões */
+}
+
+/* ESTE É O CÓDIGO DO "BOTÃO" */
+.sidebar ul li a {
+    text-decoration: none;
+    color: #444; /* Cor do texto do botão */
+    font-family: 'Poppins', sans-serif; /* Fonte moderna */
+    font-weight: 500;
+    font-size: 16px;
+    
+    display: block; /* FAZ O LINK OCUPAR A LARGURA TODA */
+    padding: 12px 15px; /* Espaçamento interno (altura do botão) */
+    border-radius: 6px; /* Cantos arredondados */
+    
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Efeito HOVER (passar o mouse) */
+.sidebar ul li a:hover {
+    background-color: #f0f0f0; /* Um cinza bem claro no hover */
+    color: #111;
+}
+
+/* Botão ATIVO (página atual) */
+.sidebar ul li a.active {
+    background-color: #007bff; /* Cor azul de destaque */
+    color: white; /* Texto branco */
+    font-weight: 700;
+}
