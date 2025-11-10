@@ -2,16 +2,22 @@
 session_start();
 require 'includes/db.php'; // Inclui a conexão com o banco
 
-// Verifica se o usuário está logado e é um freelancer
-if (!isset($_SESSION['usuario_id']) || $_SESSION['tipo_usuario'] != 'freelancer') {
+// 1. Padronizar a checagem de ID de sessão para 'user_id' e carregar o tipo de usuário
+$freelancer_id = $_SESSION['user_id'] ?? null;
+$tipo_usuario = $_SESSION['tipo_usuario'] ?? '';
+
+// Verifica se o usuário está logado E se ele tem permissão de freelancer ('freelancer' ou 'ambos')
+if (!$freelancer_id || !in_array(strtolower($tipo_usuario), ['freelancer', 'ambos'])) {
+    // Se não estiver logado ou não tiver permissão, redireciona para o login.
     header("Location: login.php");
     exit();
 }
 
-$freelancer_id = $_SESSION['usuario_id'];
+// Se o login foi feito usando 'user_id' no dashboard, o ID a ser usado é 'user_id'
+// Se o seu login salva 'usuario_id', use $_SESSION['usuario_id'] e ajuste a checagem acima.
+// Usaremos $freelancer_id que já foi definido.
 
 // Prepara a query SQL para buscar as vagas em que o freelancer se candidatou
-// Usamos JOIN para pegar informações da tabela 'vagas' e 'candidaturas'
 $sql = "SELECT 
             v.id AS vaga_id, 
             v.titulo, 
@@ -25,7 +31,8 @@ $sql = "SELECT
 
 // Usando prepared statements para segurança contra SQL Injection
 $stmt = $pdo->prepare($sql);
-$stmt->execute([$freelancer_id]);
+// Executando com $freelancer_id que foi obtido de $_SESSION['user_id']
+$stmt->execute([$freelancer_id]); 
 $candidaturas = $stmt->fetchAll();
 
 ?>
@@ -41,7 +48,7 @@ $candidaturas = $stmt->fetchAll();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css"> 
-   
+    
 </head>
 <body>
 
@@ -62,14 +69,18 @@ $candidaturas = $stmt->fetchAll();
         <div class="sidebar">
             <h2>Dashboard</h2>
             <ul>
+                <li><a href="index.php">Início</a></li> 
                 <li><a href="dashboard.php">Visão Geral</a></li>
-                <?php if ($_SESSION['tipo_usuario'] == 'cliente'): ?>
+                <?php if (in_array(strtolower($tipo_usuario), ['contratante', 'ambos'])): ?>
                     <li><a href="publicar_vaga.php">Publicar Vaga</a></li>
                     <li><a href="minhas_vagas.php">Minhas Vagas</a></li>
-                <?php else: // Freelancer ?>
+                <?php endif; ?>
+                
+                <?php if (in_array(strtolower($tipo_usuario), ['freelancer', 'ambos'])): ?>
                     <li><a href="procurar_vagas.php">Procurar Vagas</a></li>
                     <li><a href="minhas_candidaturas.php" class="active">Minhas Candidaturas</a></li>
                 <?php endif; ?>
+                
                 <li><a href="gerenciar_perfil.php">Gerenciar Perfil</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>

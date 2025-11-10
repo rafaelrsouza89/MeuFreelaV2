@@ -1,21 +1,32 @@
 <?php
 session_start();
-require_once 'includes/db.php';
-if (!isset($_SESSION['user_id'])) { header('Location: login.php'); exit(); }
+// O 'db.php' PRECISA SER INCLUÍDO AQUI para que $pdo seja definido.
+// Se esta linha falhar, o script não terá a variável $pdo
+require_once 'includes/db.php'; 
+
+if (!isset($_SESSION['user_id'])) { 
+    header('Location: login.php'); 
+    exit(); 
+}
 
 $id_usuario = $_SESSION['user_id'];
 $message = '';
 
 // 1. BUSQUE O USUÁRIO PRIMEIRO
-try {
+try { // LINHA 11: Este bloco requer que $pdo exista!
     $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
     $stmt_select = $pdo->prepare($sql_select);
     $stmt_select->execute(['id_usuario' => $id_usuario]);
     $usuario = $stmt_select->fetch();
-} catch (PDOException $e) { die("Erro ao carregar dados do perfil."); }
+} catch (PDOException $e) { 
+    // Em caso de erro aqui (e.g., tabela 'usuario' não existe), exiba a mensagem
+    die("Erro ao carregar dados do perfil: " . $e->getMessage()); 
+}
 
 // 2. DEPOIS PROCESSE O POST (Lógica para o formulário de edição)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // ... (restante da lógica de processamento POST é mantida) ...
+
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
     $data_nascimento = isset($_POST['data_nascimento']) && !empty($_POST['data_nascimento']) ? trim($_POST['data_nascimento']) : null;
     $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : null;
@@ -28,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logradouro = isset($_POST['logradouro']) ? trim($_POST['logradouro']) : null;
     $numero = isset($_POST['numero']) ? trim($_POST['numero']) : null;
 
-    // Lógica para campos de Freelancer (Visível e processado apenas se for Freelancer ou Ambos)
     $is_freelancer = in_array(strtolower($usuario['tipo_usuario']), ['freelancer', 'ambos']);
     
     $biografia = $is_freelancer && isset($_POST['biografia']) ? trim($_POST['biografia']) : $usuario['biografia'];
@@ -37,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // Processamento do upload da foto
-    $foto_perfil = $usuario['foto_perfil']; // valor atual do banco
+    $foto_perfil = $usuario['foto_perfil']; 
     if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
         $nome_arquivo = 'foto_' . $id_usuario . '_' . time() . '.' . $ext;
@@ -50,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_destino)) {
             $foto_perfil = $caminho_destino;
             
-            // Remove foto antiga se existir
             if (!empty($usuario['foto_perfil']) && $usuario['foto_perfil'] !== 'default-avatar.png' && file_exists($usuario['foto_perfil'])) {
                 @unlink($usuario['foto_perfil']);
             }
@@ -58,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Atualiza todos os campos de Usuário e Freelancer no SQL
         $sql_update = "UPDATE usuario SET nome = :nome, data_nascimento = :data_nascimento, cpf = :cpf, telefone = :telefone, linkedin = :linkedin, cep = :cep, estado = :estado, cidade = :cidade, bairro = :bairro, logradouro = :logradouro, numero = :numero, foto_perfil = :foto_perfil, biografia = :biografia, especialidades = :especialidades, portfolio_url = :portfolio_url WHERE id = :id_usuario";
         $stmt_update = $pdo->prepare($sql_update);
         $stmt_update->execute([
@@ -83,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_name'] = $nome;
         $message = '<div class="alert alert-success">Perfil atualizado com sucesso!</div>';
 
-        // Recarrega $usuario para refletir as alterações
         $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
         $stmt_select = $pdo->prepare($sql_select);
         $stmt_select->execute(['id_usuario' => $id_usuario]);
@@ -94,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Lógica para controlar o que mostrar no dashboard (Freelancer ou Ambos podem procurar vagas)
 $mostrarBotaoProcurarVagas = false;
 $is_freelancer_db = false;
 if (isset($usuario['tipo_usuario'])) {
@@ -111,35 +117,65 @@ if (isset($usuario['tipo_usuario'])) {
     <title>Meu Perfil - MeuFreela</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
- 
-        
-
- </head>
+</head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-                <div class="position-sticky">
-                    <h4 class="px-3">MeuFreela</h4>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a class="nav-link active" href="dashboard.php">Meu Perfil</a></li>
-                        <?php if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['contratante', 'ambos'])): ?>
-                            <li class="nav-item"><a class="nav-link" href="minhas_vagas.php">Minhas Vagas</a></li>
-                        <?php endif; ?>
-                        <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
-                    </ul>
-                </div>
-            </nav>
+            
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-4">
+    <div class="position-sticky">
+        <a href="index.php" class="text-decoration-none text-dark">
+            <h4 class="px-3 mb-4">MeuFreela</h4>
+        </a>
+        <ul class="nav flex-column">
+            
+            <li class="nav-item mb-2">
+                <a class="nav-link active btn btn-outline-primary w-100" href="dashboard.php">
+                    Meu Perfil
+                </a>
+            </li>
+            
+            <?php if (isset($usuario['tipo_usuario']) && in_array($usuario['tipo_usuario'], ['contratante', 'ambos'])): ?>
+            <li class="nav-item mb-2">
+                <a class="nav-link btn btn-outline-primary w-100" href="minhas_vagas.php">
+                    Minhas Vagas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link btn btn-outline-primary w-100" href="publicar_vaga.php">
+                    Publicar Vaga
+                </a>
+            </li>
+            
+            <?php endif; ?>
+            
+            <?php if ($mostrarBotaoProcurarVagas): ?>
+            <li class="nav-item mb-2">
+                <a class="nav-link btn btn-outline-primary w-100" href="procurar_vagas.php">
+                    Procurar Vagas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link btn btn-outline-primary w-100" href="minhas_candidaturas.php">
+                    Minhas Candidaturas
+                </a>
+            </li>
+            <?php endif; ?>
+            
+            <li class="nav-item mb-2">
+                <a class="nav-link btn btn-danger w-100" href="logout.php">
+                    Sair
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Meu Perfil</h1>
                     <div>
-                        <button id="editButton" class="btn btn-outline-primary">Editar Perfil</button>
-                        <?php if ($mostrarBotaoProcurarVagas): ?>
-                            <a href="procurar_vagas.php" class="btn btn-success ms-2">Procurar Vagas</a>
-                            <a href="minhas_candidaturas.php">Minhas Candidaturas</a>
-                        <?php endif; ?>
+                        <button id="editButton" class="btn btn-primary">Editar Perfil</button>
                     </div>
                 </div>
 
@@ -147,45 +183,45 @@ if (isset($usuario['tipo_usuario'])) {
 
                 <div id="infoDisplay" class="card">
                     <div class="card-body">
-                         <div class="row">
-                            <div class="col-md-3 text-center">
-                                <?php
-                                $foto_display = !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150';
-                                ?>
-                                <img src="<?php echo $foto_display; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                                <p class="text-muted small">Tipo de Conta: <?php echo ucfirst(htmlspecialchars($usuario['tipo_usuario'] ?? 'Não informado')); ?></p>
-                            </div>
-                            <div class="col-md-9">
-                                <h5>Dados Pessoais</h5>
-                                <div class="info-display">
-                                    <p><strong>Nome Completo:</strong> <?php echo htmlspecialchars($usuario['nome'] ?? 'Não informado'); ?></p>
-                                    <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars($usuario['data_nascimento'] ?? 'Não informado'); ?></p>
-                                    <p><strong>CPF:</strong> <?php echo htmlspecialchars($usuario['cpf'] ?? 'Não informado'); ?></p>
-                                </div><hr>
-                                <h5>Informações de Contato</h5>
-                                <div class="info-display">
-                                    <p><strong>E-mail:</strong> <?php echo htmlspecialchars($usuario['email'] ?? 'Não informado'); ?></p>
-                                    <p><strong>Telefone:</strong> <?php echo htmlspecialchars($usuario['telefone'] ?? 'Não informado'); ?></p>
-                                    <p><strong>LinkedIn:</strong> <?php echo htmlspecialchars($usuario['linkedin'] ?? 'Não informado'); ?></p>
-                                </div><hr>
-                                <h5>Endereço</h5>
-                                <div class="info-display">
-                                    <p><strong>Logradouro:</strong> <?php echo htmlspecialchars($usuario['logradouro'] ?? 'Não informado'); ?>, <?php echo htmlspecialchars($usuario['numero'] ?? 's/n'); ?></p>
-                                    <p><strong>Bairro:</strong> <?php echo htmlspecialchars($usuario['bairro'] ?? 'Não informado'); ?></p>
-                                    <p><strong>Cidade/Estado:</strong> <?php echo htmlspecialchars($usuario['cidade'] ?? 'Não informado'); ?>/<?php echo htmlspecialchars($usuario['estado'] ?? 'SC'); ?></p>
-                                </div>
-                                
-                                <?php if ($is_freelancer_db): ?>
-                                    <hr>
-                                    <h5>Informações de Freelancer</h5>
-                                    <div class="info-display">
-                                        <p><strong>Biografia:</strong> <?php echo nl2br(htmlspecialchars($usuario['biografia'] ?? 'Não informado')); ?></p>
-                                        <p><strong>Especialidades:</strong> <?php echo htmlspecialchars($usuario['especialidades'] ?? 'Não informado'); ?></p>
-                                        <p><strong>Portfólio:</strong> <?php echo !empty($usuario['portfolio_url']) ? '<a href="' . htmlspecialchars($usuario['portfolio_url']) . '" target="_blank">Ver Portfólio</a>' : 'Não informado'; ?></p>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                           <div class="row">
+                             <div class="col-md-3 text-center">
+                                 <?php
+                                 $foto_display = !empty($usuario['foto_perfil']) ? htmlspecialchars($usuario['foto_perfil']) : 'https://via.placeholder.com/150';
+                                 ?>
+                                 <img src="<?php echo $foto_display; ?>" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                 <p class="text-muted small">Tipo de Conta: <?php echo ucfirst(htmlspecialchars($usuario['tipo_usuario'] ?? 'Não informado')); ?></p>
+                             </div>
+                             <div class="col-md-9">
+                                 <h5>Dados Pessoais</h5>
+                                 <div class="info-display">
+                                     <p><strong>Nome Completo:</strong> <?php echo htmlspecialchars($usuario['nome'] ?? 'Não informado'); ?></p>
+                                     <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars($usuario['data_nascimento'] ?? 'Não informado'); ?></p>
+                                     <p><strong>CPF:</strong> <?php echo htmlspecialchars($usuario['cpf'] ?? 'Não informado'); ?></p>
+                                 </div><hr>
+                                 <h5>Informações de Contato</h5>
+                                 <div class="info-display">
+                                     <p><strong>E-mail:</strong> <?php echo htmlspecialchars($usuario['email'] ?? 'Não informado'); ?></p>
+                                     <p><strong>Telefone:</strong> <?php echo htmlspecialchars($usuario['telefone'] ?? 'Não informado'); ?></p>
+                                     <p><strong>LinkedIn:</strong> <?php echo htmlspecialchars($usuario['linkedin'] ?? 'Não informado'); ?></p>
+                                 </div><hr>
+                                 <h5>Endereço</h5>
+                                 <div class="info-display">
+                                     <p><strong>Logradouro:</strong> <?php echo htmlspecialchars($usuario['logradouro'] ?? 'Não informado'); ?>, <?php echo htmlspecialchars($usuario['numero'] ?? 's/n'); ?></p>
+                                     <p><strong>Bairro:</strong> <?php echo htmlspecialchars($usuario['bairro'] ?? 'Não informado'); ?></p>
+                                     <p><strong>Cidade/Estado:</strong> <?php echo htmlspecialchars($usuario['cidade'] ?? 'Não informado'); ?>/<?php echo htmlspecialchars($usuario['estado'] ?? 'SC'); ?></p>
+                                 </div>
+                                 
+                                 <?php if ($is_freelancer_db): ?>
+                                     <hr>
+                                     <h5>Informações de Freelancer</h5>
+                                     <div class="info-display">
+                                         <p><strong>Biografia:</strong> <?php echo nl2br(htmlspecialchars($usuario['biografia'] ?? 'Não informado')); ?></p>
+                                         <p><strong>Especialidades:</strong> <?php echo htmlspecialchars($usuario['especialidades'] ?? 'Não informado'); ?></p>
+                                         <p><strong>Portfólio:</strong> <?php echo !empty($usuario['portfolio_url']) ? '<a href="' . htmlspecialchars($usuario['portfolio_url']) . '" target="_blank">Ver Portfólio</a>' : 'Não informado'; ?></p>
+                                     </div>
+                                 <?php endif; ?>
+                             </div>
+                           </div>
                     </div>
                 </div>
 
@@ -228,7 +264,6 @@ if (isset($usuario['tipo_usuario'])) {
                                         <input type="text" class="form-control" id="portfolio_url" name="portfolio_url" value="<?php echo htmlspecialchars($usuario['portfolio_url'] ?? ''); ?>">
                                     </div>
                                 <?php endif; ?>
-                                
                             </div>
                         </div>
                         <div class="mb-3">
