@@ -1,128 +1,108 @@
 <?php
 session_start();
-require 'includes/db.php'; // Inclui a conexão com o banco
+require_once 'includes/db.php';
 
-// 1. Padronizar a checagem de ID de sessão para 'user_id' e carregar o tipo de usuário
-$freelancer_id = $_SESSION['user_id'] ?? null;
-$tipo_usuario = $_SESSION['tipo_usuario'] ?? '';
-
-// Verifica se o usuário está logado E se ele tem permissão de freelancer ('freelancer' ou 'ambos')
-if (!$freelancer_id || !in_array(strtolower($tipo_usuario), ['freelancer', 'ambos'])) {
-    // Se não estiver logado ou não tiver permissão, redireciona para o login.
-    header("Location: login.php");
-    exit();
+if (!isset($_SESSION['user_id'])) { 
+    header('Location: login.php'); 
+    exit(); 
 }
 
-// Se o login foi feito usando 'user_id' no dashboard, o ID a ser usado é 'user_id'
-// Se o seu login salva 'usuario_id', use $_SESSION['usuario_id'] e ajuste a checagem acima.
-// Usaremos $freelancer_id que já foi definido.
+$id_contratante = $_SESSION['user_id'];
+$error_message = '';
 
-// Prepara a query SQL para buscar as vagas em que o freelancer se candidatou
-$sql = "SELECT 
-            v.id AS vaga_id, 
-            v.titulo, 
-            v.orcamento, 
-            c.data_candidatura, 
-            c.status 
-        FROM vagas v 
-        JOIN candidaturas c ON v.id = c.vaga_id 
-        WHERE c.freelancer_id = ? 
-        ORDER BY c.data_candidatura DESC";
+// Variável para controlar a exibição do botão de publicação
+$can_publish = in_array(strtolower($_SESSION['user_type'] ?? ''), ['contratante', 'ambos']);
 
-// Usando prepared statements para segurança contra SQL Injection
-$stmt = $pdo->prepare($sql);
-// Executando com $freelancer_id que foi obtido de $_SESSION['user_id']
-$stmt->execute([$freelancer_id]); 
-$candidaturas = $stmt->fetchAll();
-
+try {
+    $sql = "SELECT v.id, v.titulo, COUNT(c.id) AS total_candidaturas FROM vaga AS v LEFT JOIN candidatura AS c ON v.id = c.vaga_id WHERE v.id_usuario = :id_contratante GROUP BY v.id ORDER BY v.data_publicacao DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id_contratante' => $id_contratante]);
+    $vagas = $stmt->fetchAll();
+} catch (PDOException $e) { 
+    $error_message = "Erro ao carregar suas vagas."; 
+}
 ?>
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Candidaturas - MeuFreela</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Vagas - MeuFreela</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
-    
 </head>
 <body>
-
-    <header class="header">
-        <div class="container">
-            <a href="index.php" class="logo">MeuFreelaV2</a>
-            <nav>
-                <ul>
-                    <li><a href="dashboard.php">Dashboard</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-                </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky">
+                    <h4 class="px-3">MeuFreela</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" href="dashboard.php">Meu Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="minhas_vagas.php">Minhas Vagas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Sair</a></li>
+                    </ul>
+                </div>
             </nav>
-        </div>
-    </header>
 
-    <div class="dashboard-container container">
-        
-        <div class="sidebar">
-            <h2>Dashboard</h2>
-            <ul>
-                <li><a href="index.php">Início</a></li> 
-                <li><a href="dashboard.php">Visão Geral</a></li>
-                <?php if (in_array(strtolower($tipo_usuario), ['contratante', 'ambos'])): ?>
-                    <li><a href="publicar_vaga.php">Publicar Vaga</a></li>
-                    <li><a href="minhas_vagas.php">Minhas Vagas</a></li>
-                <?php endif; ?>
-                
-                <?php if (in_array(strtolower($tipo_usuario), ['freelancer', 'ambos'])): ?>
-                    <li><a href="procurar_vagas.php">Procurar Vagas</a></li>
-                    <li><a href="minhas_candidaturas.php" class="active">Minhas Candidaturas</a></li>
-                <?php endif; ?>
-                
-                <li><a href="gerenciar_perfil.php">Gerenciar Perfil</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Minhas Vagas Publicadas</h1>
+                    
+                    <!-- CORREÇÃO APLICADA: SÓ MOSTRA O BOTÃO SE HOUVER PERMISSÃO -->
+                    <?php if ($can_publish): ?>
+                        <a href="publicar_vaga.php" class="btn btn-primary">Publicar Nova Vaga</a>
+                    <?php endif; ?>
+                </div>
 
-        <div class="content">
-            <h1>Minhas Candidaturas</h1>
-            
-            <?php if (empty($candidaturas)): ?>
-                <p>Você ainda não se candidatou a nenhuma vaga.</p>
-            <?php else: ?>
-                <?php foreach ($candidaturas as $vaga): ?>
-                    <div class="vaga-item">
-                        <h3>
-                            <a href="detalhes_vaga.php?id=<?php echo $vaga['vaga_id']; ?>">
-                                <?php echo htmlspecialchars($vaga['titulo']); ?>
-                            </a>
-                        </h3>
-                        <p><strong>Orçamento:</strong> R$ <?php echo htmlspecialchars(number_format($vaga['orcamento'], 2, ',', '.')); ?></p>
-                        <p><strong>Data da Candidatura:</strong> <?php echo date('d/m/Y', strtotime($vaga['data_candidatura'])); ?></p>
-                        
-                        <?php 
-                        // Define a classe CSS e o texto com base no status
-                        $status_classe = 'status-pendente';
-                        $status_texto = 'Pendente';
-                        if ($vaga['status'] == 'aprovado') {
-                            $status_classe = 'status-aprovado';
-                            $status_texto = 'Aprovado';
-                        } elseif ($vaga['status'] == 'rejeitado') {
-                            $status_classe = 'status-rejeitado';
-                            $status_texto = 'Rejeitado';
-                        }
-                        ?>
-                        <p><strong>Status:</strong> <span class="status <?php echo $status_classe; ?>"><?php echo $status_texto; ?></span></p>
-                        
-                        <a href="detalhes_vaga.php?id=<?php echo $vaga['vaga_id']; ?>" class="btn">Ver Detalhes da Vaga</a>
+                <div class="card">
+                    <div class="card-body">
+                        <?php if (!empty($error_message)): ?>
+                            <div class="alert alert-danger" role="alert"><?php echo $error_message; ?></div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($vagas)): ?>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Título da Vaga</th>
+                                        <th>Candidaturas</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($vagas as $vaga): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($vaga['titulo']); ?></td>
+                                        <td><span class="badge bg-secondary"><?php echo $vaga['total_candidaturas']; ?></span></td>
+                                        <td>
+                                            <!-- Botões de Ação (Editar, Excluir, Ver Candidatos) -->
+                                            <a href="editar_vaga.php?id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-info me-2 text-white" title="Editar Vaga">
+                                                Editar
+                                            </a>
+
+                                            <form method="POST" action="processa_exclusao_vaga.php" style="display:inline-block;" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir esta vaga? Esta ação é irreversível.');">
+                                                <input type="hidden" name="vaga_id" value="<?php echo $vaga['id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger me-2" title="Excluir Vaga">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                            
+                                            <a href="ver_candidatos.php?vaga_id=<?php echo $vaga['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                                Ver Candidatos
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p class="text-center">Você ainda não se cadastrou em nenhuma vaga.</p>
+                        <?php endif; ?>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-            
+                </div>
+            </main>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
