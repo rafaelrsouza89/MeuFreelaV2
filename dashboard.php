@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 $id_usuario = $_SESSION['user_id'];
 $message = '';
 
-// 1. BUSQUE O USUÁRIO PRIMEIRO
+// 1. BUSQUA O USUÁRIO PRIMEIRO
 try { // LINHA 11: Este bloco requer que $pdo exista!
     $sql_select = "SELECT * FROM usuario WHERE id = :id_usuario";
     $stmt_select = $pdo->prepare($sql_select);
@@ -23,7 +23,7 @@ try { // LINHA 11: Este bloco requer que $pdo exista!
     die("Erro ao carregar dados do perfil: " . $e->getMessage()); 
 }
 
-// 2. DEPOIS PROCESSE O POST (Lógica para o formulário de edição)
+// 2. Lógica para o formulário de edição
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ... (restante da lógica de processamento POST é mantida) ...
 
