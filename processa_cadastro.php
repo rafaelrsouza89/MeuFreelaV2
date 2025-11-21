@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_insert = $pdo->prepare($sql_insert);
         $stmt_insert->execute(['nome' => $nome, 'email' => $email, 'senha' => $senha_hash, 'telefone' => $telefone, 'tipo_usuario' => $tipo_usuario]);
         
-        // CORREÇÃO CRÍTICA: Destruir qualquer sessão ativa.
+        // Destruir qualquer sessão ativa.
         // Isso garante que, se o usuário estava logado como outro antes de se cadastrar,
         // a sessão antiga seja limpa para que o novo usuário faça o login corretamente.
         if (session_status() === PHP_SESSION_NONE) {
