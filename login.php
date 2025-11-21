@@ -30,7 +30,7 @@
                     </div>
                     <div class="card-footer text-center py-3">
                         <div class="small"><a href="cadastro.php">Não tem uma conta? Cadastre-se!</a></div>
-                        <div class="small"><a href="recuperar_senha.php">Esqueceu a senha?</a></div>
+                        
                     </div>
                 </div>
             </div>
