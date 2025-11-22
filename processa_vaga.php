@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 3. REDIRECIONAMENTO DE SUCESSO: Redireciona para a lista de Minhas Vagas
         if ($success) {
-            // CORRIGIDO: Agora redireciona para a lista de vagas do contratante
+            // Agora redireciona para a lista de vagas do contratante
             header('Location: minhas_vagas.php?status=vaga_publicada'); 
             exit();
         } else {
