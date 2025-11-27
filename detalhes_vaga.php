@@ -65,12 +65,7 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'aplicado') {
             <div class="alert alert-danger"><?= htmlspecialchars($alert_error) ?></div>
         <?php endif; ?>
 
-        <div class="d-flex justify-content-end mb-4">
-            <button onclick="history.back()" class="btn btn-outline-secondary">
-                &larr; Voltar
-            </button>
-        </div>
-
+      
         <div class="card">
             <div class="card-header">
                 <h1><?php echo htmlspecialchars($vaga['titulo']); ?></h1>
@@ -106,6 +101,11 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'aplicado') {
                     <div class="alert alert-info mt-4">Somente freelancers podem se candidatar a vagas.</div>
                 <?php endif; ?>
             </div>
+        </div>
+         <div class="d-flex justify-content-start mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
         </div>
     </main>
 

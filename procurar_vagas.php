@@ -33,7 +33,7 @@ if (!isset($pdo)) {
         
         $sql .= " ORDER BY v.data_publicacao DESC";
 
-        // =========================================================
+        
         // TEMPORARY DEBUG CHECK: Ajuda a diagnosticar o SQL gerado.
         // Acesse a página com ?debug=1 na URL para ver as informações.
         if (isset($_GET['debug']) && $_GET['debug'] == 1) {
@@ -43,7 +43,7 @@ if (!isset($pdo)) {
             echo "<strong>Parâmetros (Bindings):</strong>\n" . print_r($params, true);
             echo "</pre><hr>";
         }
-        // =========================================================
+       
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
@@ -66,11 +66,7 @@ if (!isset($pdo)) {
 </head>
 <body>
     <main class="container py-5">
-        <div class="d-flex justify-content-end mb-4">
-            <button onclick="history.back()" class="btn btn-outline-secondary">
-                &larr; Voltar
-            </button>
-        </div>
+       
         
         <div class="job-listing-panel">
             <h1 class="mb-4 text-center">Encontre uma Vaga</h1>
@@ -130,6 +126,11 @@ if (!isset($pdo)) {
             <?php else: ?>
                 <div class="alert alert-warning text-center">Nenhuma vaga encontrada com os filtros selecionados.</div>
             <?php endif; ?>
+        </div>
+        <div class="d-flex justify-content-start mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

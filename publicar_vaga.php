@@ -28,11 +28,6 @@ if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
 <body>
     <main class="container py-5 flex-grow-1">
         
-        <div class="d-flex justify-content-end mb-4">
-            <button onclick="history.back()" class="btn btn-outline-secondary">
-                &larr; Voltar
-            </button>
-        </div>
         
         <div class="card">
             <div class="card-body">
@@ -68,6 +63,11 @@ if (!in_array($_SESSION['user_type'], ['contratante', 'ambos'])) {
                     <button type="submit" class="btn btn-primary">Publicar</button>
                 </form>
             </div>
+        </div>
+         <div class="d-flex justify-content-start mb-4">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                &larr; Voltar
+            </button>
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

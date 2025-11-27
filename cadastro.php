@@ -10,11 +10,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
-                <div class="d-flex justify-content-end mt-4 mb-2">
-                    <button onclick="history.back()" class="btn btn-outline-secondary">
-                        &larr; Voltar
-                    </button>
-                </div>
+                
                 
                 <div class="card shadow-lg border-0 rounded-lg mt-2">
                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Criar Conta</h3></div>
