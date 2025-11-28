@@ -26,9 +26,11 @@ if (!isset($pdo)) {
             $params[':search_title'] = '%' . $search_term . '%';
             $params[':search_desc'] = '%' . $search_term . '%';
         }
-        if (!empty($filter_tipo)) {
-            $sql .= " AND v.tipo_vaga = :tipo";
-            $params[':tipo'] = $filter_tipo;
+       if (!empty($filter_tipo)) {
+    // função LOWER() para ignorar se o valor no banco está
+    // como 'Remunerado', 'remunerado' ou 'REMUNERADO'.
+    $sql .= " AND LOWER(v.tipo_vaga) = :tipo";
+    $params[':tipo'] = $filter_tipo;
         }
         
         $sql .= " ORDER BY v.data_publicacao DESC";

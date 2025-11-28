@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-light">
-    <div class="container">
+    <div 
+     class="container">
+            <a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a>
+            </div>
+        
+    
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 

@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a>
