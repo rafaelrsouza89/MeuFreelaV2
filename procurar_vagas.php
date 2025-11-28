@@ -36,8 +36,8 @@ if (!isset($pdo)) {
         $sql .= " ORDER BY v.data_publicacao DESC";
 
         
-        // TEMPORARY DEBUG CHECK: Ajuda a diagnosticar o SQL gerado.
-        // Acesse a página com ?debug=1 na URL para ver as informações.
+        // TEMPORARY DEBUG CHECK: para judar a diagnosticar o SQL gerado.
+        
         if (isset($_GET['debug']) && $_GET['debug'] == 1) {
             echo "<pre style='background-color: #f8d7da; color: #721c24; padding: 15px; border: 1px solid #f5c6cb;'>";
             echo "<h3>SQL DEBUG MODE</h3>";
@@ -73,7 +73,7 @@ if (!isset($pdo)) {
         <div class="job-listing-panel">
             <h1 class="mb-4 text-center">Encontre uma Vaga</h1>
 
-            <!-- FORMULÁRIO DE FILTRO - RECEBE O ESTILO DE CARD AZULADO -->
+            <!-- FORMULÁRIO DE FILTRO - ESTILO DE CARD AZULADO -->
             <form action="procurar_vagas.php" method="GET" class="card mb-5 p-3">
                 <div class="card-body">
                     <h5 class="card-title mb-3">Opções de Filtro</h5>
