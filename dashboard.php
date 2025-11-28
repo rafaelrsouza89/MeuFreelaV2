@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'estado' => $estado, 
             'cidade' => $cidade, 
             'bairro' => $bairro, 
-            'rua' => $rua, 
+            'Logradouro' => $logradouro, 
             'numero' => $numero,
             'foto_perfil' => $foto_perfil,
             'biografia' => $biografia,

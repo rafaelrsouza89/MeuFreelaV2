@@ -95,7 +95,7 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'aplicado') {
                     <?php endif; ?>
                 <?php elseif (!isset($_SESSION['user_id'])): ?>
                     <div class="alert alert-warning mt-4" role="alert">
-                        <a href="login.php?redirect=detalhes_vaga.php?id=<?php echo $vaga['id']; ?>">Faça login como freelancer</a> para se candidatar.
+                        <a href="login.php?redirect=detalhes_vaga.php?id=<?php echo $vaga['id']; ?>">Faça login para se candidatar!</a>
                     </div>
                 <?php else: ?>
                     <div class="alert alert-info mt-4">Somente freelancers podem se candidatar a vagas.</div>
