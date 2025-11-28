@@ -8,6 +8,7 @@
 </head>
 <body class="bg-light">
     <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="index.php">MeuFreela</a>
         <div class="row justify-content-center">
             <div class="col-lg-5">
                 <div class="d-flex justify-content-end mt-4 mb-2">
