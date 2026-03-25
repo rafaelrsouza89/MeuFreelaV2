@@ -1,31 +1,39 @@
-# MeuFreela V2
+Plataforma Web para Conexão entre Contratantes e Freelancers
 
-Plataforma web em PHP para conexão entre contratantes e freelancers.
+O MeuFreela é um ecossistema desenvolvido para profissionalizar a busca por serviços autônomos na região de Jaraguá do Sul. Esta revisão (V2) foca na robustez do backend, segurança da informação e escalabilidade da arquitetura.
 
-## Organização por responsabilidade
-- Frontend: páginas e interface (renderização)
-- Backend: regras de negócio, autenticação, persistência e processamento de formulários
+🏗️ Arquitetura e Organização
+O projeto adota uma separação clara de responsabilidades para facilitar a manutenção e evolução do sistema:
 
-Estrutura atual:
-- `frontend/pages` (páginas)
-- `frontend/assets/css` (estilos)
-- `backend/actions` (processamentos e logout)
-- `backend/config` (conexão com banco)
-- `backend/database` (schema SQL)
+Frontend: Camada de apresentação e interface do usuário (renderização, CSS e páginas dinâmicas).
 
-Veja o detalhamento em [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
+Backend: Motor de regras de negócio, autenticação segura, persistência de dados e processamento de formulários.
 
-## Melhorias aplicadas nesta revisão
-1. Correção de inconsistência entre `id_vaga` e `vaga_id` em consultas e inserts.
-2. Correção do update de perfil em `frontend/pages/dashboard.php` (binding de parâmetros).
-3. Endurecimento do login com validação de método/campos e `session_regenerate_id(true)`.
-4. Remoção de bloco de debug SQL em produção (`frontend/pages/procurar_vagas.php`).
-5. Implementação do fluxo de recuperação de senha (`backend/actions/processa_recuperacao.php`).
-6. Melhoria do schema SQL com FKs e índices em `candidatura`.
+Infraestrutura: Configurações de banco de dados e schemas SQL otimizados com chaves estrangeiras (FKs) e índices.
 
-## Boas práticas recomendadas (próxima etapa)
-- CSRF token em todos os formulários POST.
-- `APP_ENV` para não exibir mensagens técnicas no frontend.
-- Rate limiting no login e recuperação de senha.
-- Upload de imagem com whitelist de MIME e tamanho máximo.
-- Migrações versionadas para banco (em vez de SQL único manual).
+🛡️ Evolução Técnica e Segurança (V2)
+Nesta versão, implementei melhorias críticas baseadas em boas práticas de engenharia de software:
+
+Segurança de Sessão: Implementação de session_regenerate_id(true) para prevenir ataques de fixação de sessão.
+
+Integridade de Dados: Padronização de consultas SQL (correção de id_vaga vs vaga_id) e uso de parameter binding para prevenir SQL Injection.
+
+Fluxos de Usuário: Implementação completa do sistema de recuperação de senha e gestão de dashboard.
+
+Otimização de Banco: Refatoração do schema com foco em performance (índices em candidaturas).
+
+🛠️ Tecnologias Utilizadas
+Linguagem: PHP (Backend e Processamento).
+
+Banco de Dados: MySQL/MariaDB (Schema Relacional).
+
+Interface: HTML5, CSS3 e PHP dinâmico.
+
+📅 Próximos Passos (Roadmap)
+[ ] Implementação de Tokens CSRF para proteção de formulários.
+
+[ ] Configuração de variáveis de ambiente (APP_ENV) para gestão de erros.
+
+[ ] Sistema de Rate Limiting para segurança em tentativas de login.
+
+[ ] Módulo de upload de arquivos com validação de MIME-type.
